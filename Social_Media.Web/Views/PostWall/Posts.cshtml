@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Post>
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Posts";
+    string newPost = "Post 2";
+}
+
+@foreach (Post post in Model ?? new Post[]{ })
+{
+    <h3> Title: @post.Title</h3>
+    <h3>Discription: @post.Discription</h3>
+    <h3>CreateAt: @post.CreateAt</h3>
+    <form method="post" asp-action="RemovetPost" asp-controller="CrudPostWall">
+        <input hidden="hidden" name="postId" value="@post.Id"/>
+        <button type="submit">RemovetPost</button>
+    </form>
+}
+<form method="post" asp-action="CreatePost" asp-controller="CrudPostWall">
+    <input  hidden="hidden" name="Title" value="@newPost"/>
+    <input hidden="hidden" name="Discription" value="@newPost"/>
+    <button type="submit">CreatePost</button>
+</form>
