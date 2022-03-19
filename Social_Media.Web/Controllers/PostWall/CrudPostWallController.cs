@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities.Interfaces;
 using Social_Media.EntityFramework;
@@ -87,8 +88,10 @@ namespace Social_Media.Web.Controllers
                 Post postContext = _contextEF.GetAll<Post>().FirstOrDefault(postContext => postContext.Id == post.Id);
                 if (postContext != null)
                 {
-                    post.UpdateAt = DateTime.Now;
-                    await _contextEF.UpdateAsync(post);
+                    postContext.UpdateAt = DateTime.Now;
+                    postContext.Discription = post.Discription;
+                    postContext.Title = post.Title;
+                    await _contextEF.UpdateAsync(postContext);
 
                     if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
                     {
@@ -100,7 +103,7 @@ namespace Social_Media.Web.Controllers
                     }
                 }
             }
-            return RedirectToAction("EditPost", "Post");
+            return RedirectToAction("EditPost", "PostWall");
         }
     }
 }

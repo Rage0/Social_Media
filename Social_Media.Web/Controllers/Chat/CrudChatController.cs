@@ -43,7 +43,10 @@ namespace Social_Media.Web.Controllers
                 Chat chatContext = _contextEF.GetAll<Chat>().FirstOrDefault(chatContext => chatContext.Id == chat.Id);
                 if (chatContext != null)
                 {
-                    await _contextEF.UpdateAsync(chat);
+                    chatContext.UpdateAt = DateTime.Now;
+                    chatContext.Name = chat.Name;
+
+                    await _contextEF.UpdateAsync(chatContext);
 
                     if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
                     {

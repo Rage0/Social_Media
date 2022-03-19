@@ -54,11 +54,36 @@ namespace Social_Media.Tests.ControllerTests
             };
             var result = controller.CreateMassage(massage, ChatList().First().Id);
 
-            var routeToCreateMassage = Assert.IsType<RedirectToActionResult>(result);
+            var routeToCreateMassage = Assert.IsType<RedirectToActionResult>(result.Result);
             Assert.Equal("ChatingRoom", routeToCreateMassage.ActionName);
             Assert.Equal("Chat", routeToCreateMassage.ControllerName);
             mock.Verify(moq => moq.CreateAsync(massage));
 
+        }
+
+        [Fact]
+        public void UpdateMassageTest()
+        {
+            var mock = GetMock();
+            var controller = new CrudMassageController(mock.Object);
+
+            var chatId = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            var massage = new Massage
+            {
+                Discription = "I'm fine",
+                UpdateAt = DateTime.Now,
+                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+            };
+            var result = controller.UpdateMassage(massage, chatId);
+            var result2 = controller.UpdateMassage(massage, chatId, "Posts/");
+
+            var routeToUpdateMassage = Assert.IsType<RedirectToActionResult>(result.Result);
+            Assert.Equal("ChatingRoom", routeToUpdateMassage.ActionName);
+            Assert.Equal("Chat", routeToUpdateMassage.ControllerName);
+            mock.Verify(repo => repo.UpdateAsync(It.IsAny<Massage>()));
+
+            var routeToUpdateMassageAnother = Assert.IsType<RedirectToRouteResult>(result2.Result);
+            Assert.Equal("Posts/", routeToUpdateMassageAnother.RouteName);
         }
 
         [Fact]
@@ -72,12 +97,12 @@ namespace Social_Media.Tests.ControllerTests
             var result = controller.RemovetMassage(massageId, chatId);
             var result2 = controller.RemovetMassage(massageId, chatId,"Posts/");
 
-            var routeToRemoveMassage = Assert.IsType<RedirectToActionResult>(result);
+            var routeToRemoveMassage = Assert.IsType<RedirectToActionResult>(result.Result);
             Assert.Equal("ChatingRoom", routeToRemoveMassage.ActionName);
             Assert.Equal("Chat", routeToRemoveMassage.ControllerName);
             mock.Verify(repo => repo.RemovetAsync(It.IsAny<Massage>()));
 
-            var routeToRemoveMassageAnother = Assert.IsType<RedirectToRouteResult>(result);
+            var routeToRemoveMassageAnother = Assert.IsType<RedirectToRouteResult>(result2.Result);
             Assert.Equal("Posts/", routeToRemoveMassageAnother.RouteName);
         }
 

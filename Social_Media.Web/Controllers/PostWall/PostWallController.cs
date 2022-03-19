@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities_Identity;
 using Social_Media.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
 {
@@ -20,12 +22,25 @@ namespace Social_Media.Web.Controllers
 
         public IActionResult Posts()
         {
-            return View(_contextEF.GetAll<Post>().AsEnumerable());
+            return View(_contextEF.GetAll<Post>().Include(post => post.UsingChat).AsEnumerable());
         }
         
         public IActionResult CreatePost()
         {
             return View();
+        }
+
+        public async Task<IActionResult> EditPost(Guid postId)
+        {
+            Post post = await _contextEF.GetAll<Post>().FirstOrDefaultAsync(post => post.Id == postId);
+            if (post != null)
+            {
+                return View(post);
+            }
+            else
+            {
+                return RedirectToAction("Posts");
+            }
         }
     }
 }

@@ -1,0 +1,22 @@
+﻿@model Post
+
+@{
+    Layout = "_Layout";
+}
+
+<form method="post" asp-action="UpdatePost" asp-controller="CrudPostWall">
+    <tr>
+        <td>
+            <label asp-for="Title"></label>
+            <input asp-for="Title" value="@Model.Title"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label asp-for="Discription"></label>
+            <textarea asp-for="Discription" value="@Model.Discription"></textarea>
+        </td>
+    </tr>
+    <input hidden asp-for="Id" value="@Model.Id"/>
+    <button type="submit">Edit</button>
+</form>

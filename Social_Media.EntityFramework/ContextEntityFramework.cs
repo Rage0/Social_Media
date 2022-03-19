@@ -1,4 +1,5 @@
-﻿using Social_Media.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Social_Media.Data;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities.Interfaces;
 using System;

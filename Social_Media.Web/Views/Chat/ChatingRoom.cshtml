@@ -1,0 +1,26 @@
+﻿@model Chat
+
+@{
+    Layout = "_Layout";
+}
+
+@foreach (Massage massage in Model.UserMassage ?? new List<Massage> {})
+{
+    <div style="border: solid 1px">
+        <h3 style="margin: 10px;">@massage.Discription</h3>
+    </div>
+
+}
+<form asp-action="CreateMassage" asp-controller="CrudMassage">
+    <tr>
+        <td>
+            <label for="Discription"></label>
+            <input name="Discription" value=""/>
+        </td>
+    </tr>
+    
+    <input hidden="hidden" name="CreateAt" value="@DateTime.Now.Date"/>
+    <input hidden="hidden" name="UpdateAt" value="@DateTime.Now"/>
+
+    <button type="submit">Send</button>
+</form>

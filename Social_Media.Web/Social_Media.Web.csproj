@@ -10,7 +10,6 @@
 
   <ItemGroup>
     <Folder Include="Models\PostViewModels\" />
-    <Folder Include="Views\Chats\" />
     <Folder Include="wwwroot\js\" />
     <Folder Include="wwwroot\lib\" />
   </ItemGroup>

@@ -37,7 +37,6 @@ namespace Social_Media.Data
                         .OnDelete(DeleteBehavior.Cascade);
 
 
-
             base.OnModelCreating(modelBuilder);
         }
 

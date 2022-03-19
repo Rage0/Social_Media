@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Social_Media.Data.Models.Entities;
 using Social_Media.EntityFramework;
 using System;
@@ -17,7 +18,7 @@ namespace Social_Media.Web.Controllers
 
         public IActionResult Chats()
         {
-            return View(GetChats);
+            return View(_contextEF.GetAll<Chat>().AsEnumerable());
         }
 
         public IActionResult CreateChat()
@@ -27,14 +28,12 @@ namespace Social_Media.Web.Controllers
 
         public IActionResult ChatingRoom(Guid chatId)
         {
-            Chat chat = GetChats.FirstOrDefault(chat => chat.Id == chatId);
+            Chat chat = _contextEF.GetAll<Chat>().Include(chat => chat.UserMassage).FirstOrDefault(chat => chat.Id == chatId);
             if (chat != null)
             {
-                return View(chat.UserMassage);
+                return View(chat);
             }
             return RedirectToAction("Chats");
         }
-
-        private IEnumerable<Chat> GetChats => _contextEF.GetAll<Chat>().AsEnumerable();
     }
 }

@@ -8,9 +8,13 @@
 
 @foreach (Post post in Model ?? new Post[]{ })
 {
-    <h3> Title: @post.Title</h3>
+    <h3>Title: @post.Title</h3>
     <h3>Discription: @post.Discription</h3>
     <h3>CreateAt: @post.CreateAt</h3>
+    <h3>UpdateAt: @post.UpdateAt</h3>
+    <h3></h3>
+    <a asp-action="ChatingRoom" asp-controller="Chat" asp-route-chatId="@post.UsingChat.Id"><h4>Chat</h4></a>
+    <a asp-action="EditPost" asp-controller="PostWall" asp-route-postId="@post.Id">EditPost</a>
     <form method="post" asp-action="RemovetPost" asp-controller="CrudPostWall">
         <input hidden="hidden" name="postId" value="@post.Id"/>
         <button type="submit">RemovetPost</button>
@@ -19,5 +23,7 @@
 <form method="post" asp-action="CreatePost" asp-controller="CrudPostWall">
     <input  hidden="hidden" name="Title" value="@newPost"/>
     <input hidden="hidden" name="Discription" value="@newPost"/>
+    <input hidden="hidden" name="CreateAt" value="@DateTime.Now.Date"/>
+    <input hidden="hidden" name="UpdateAt" value="@DateTime.Now.Date"/>
     <button type="submit">CreatePost</button>
 </form>
