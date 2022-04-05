@@ -1,0 +1,22 @@
+﻿@model LoginViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<div asp-validation-summary="All"></div>
+<form method="post" asp-action="Login" asp-controller="Account">
+    <tr>
+        <td>
+            <label asp-for="Name"></label>
+            <input asp-for="Name"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label asp-for="Password"></label>
+            <input asp-for="Password"/>
+        </td>
+    </tr>
+    <button type="submit">Log in</button>
+</form>

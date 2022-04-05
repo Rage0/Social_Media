@@ -155,19 +155,23 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                 });
 
             migrationBuilder.CreateTable(
-                name: "Chat",
+                name: "Post",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Title = table.Column<string>(type: "text", nullable: true),
+                    RouteToPhoto = table.Column<string>(type: "text", nullable: true),
+                    Liked = table.Column<int>(type: "integer", nullable: false),
+                    Discription = table.Column<string>(type: "text", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    CreaterId = table.Column<string>(type: "text", nullable: true),
-                    Name = table.Column<string>(type: "text", nullable: true)
+                    UpdateAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    CreaterId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chat", x => x.Id);
+                    table.PrimaryKey("PK_Post", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Chat_AspNetUsers_CreaterId",
+                        name: "FK_Post_AspNetUsers_CreaterId",
                         column: x => x.CreaterId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -178,15 +182,15 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                 name: "UserUser",
                 columns: table => new
                 {
-                    FollowingFriendsId = table.Column<string>(type: "text", nullable: false),
+                    FollowingUserId = table.Column<string>(type: "text", nullable: false),
                     UserFriendsId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserUser", x => new { x.FollowingFriendsId, x.UserFriendsId });
+                    table.PrimaryKey("PK_UserUser", x => new { x.FollowingUserId, x.UserFriendsId });
                     table.ForeignKey(
-                        name: "FK_UserUser_AspNetUsers_FollowingFriendsId",
-                        column: x => x.FollowingFriendsId,
+                        name: "FK_UserUser_AspNetUsers_FollowingUserId",
+                        column: x => x.FollowingUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -199,45 +203,49 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                 });
 
             migrationBuilder.CreateTable(
-                name: "BaseEntity",
+                name: "Chat",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     CreateAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
                     UpdateAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    Liked = table.Column<int>(type: "integer", nullable: false),
-                    UsingChatId = table.Column<Guid>(type: "uuid", nullable: true),
-                    Discriminator = table.Column<string>(type: "text", nullable: false),
                     CreaterId = table.Column<string>(type: "text", nullable: true),
-                    Discription = table.Column<string>(type: "text", nullable: true),
-                    Post_CreaterId = table.Column<string>(type: "text", nullable: true),
-                    Post_Discription = table.Column<string>(type: "text", nullable: true),
-                    CommentsId = table.Column<Guid>(type: "uuid", nullable: true)
+                    PostId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BaseEntity", x => x.Id);
+                    table.PrimaryKey("PK_Chat", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BaseEntity_AspNetUsers_CreaterId",
+                        name: "FK_Chat_Post_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Post",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Massage",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Discription = table.Column<string>(type: "text", nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    UpdateAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    UsingChatId = table.Column<Guid>(type: "uuid", nullable: true),
+                    CreaterId = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Massage", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Massage_AspNetUsers_CreaterId",
                         column: x => x.CreaterId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_BaseEntity_AspNetUsers_Post_CreaterId",
-                        column: x => x.Post_CreaterId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_BaseEntity_Chat_CommentsId",
-                        column: x => x.CommentsId,
-                        principalTable: "Chat",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_BaseEntity_Chat_UsingChatId",
+                        name: "FK_Massage_Chat_UsingChatId",
                         column: x => x.UsingChatId,
                         principalTable: "Chat",
                         principalColumn: "Id",
@@ -282,28 +290,24 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_BaseEntity_CommentsId",
-                table: "BaseEntity",
-                column: "CommentsId");
+                name: "IX_Chat_PostId",
+                table: "Chat",
+                column: "PostId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_BaseEntity_CreaterId",
-                table: "BaseEntity",
+                name: "IX_Massage_CreaterId",
+                table: "Massage",
                 column: "CreaterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BaseEntity_Post_CreaterId",
-                table: "BaseEntity",
-                column: "Post_CreaterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BaseEntity_UsingChatId",
-                table: "BaseEntity",
+                name: "IX_Massage_UsingChatId",
+                table: "Massage",
                 column: "UsingChatId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chat_CreaterId",
-                table: "Chat",
+                name: "IX_Post_CreaterId",
+                table: "Post",
                 column: "CreaterId");
 
             migrationBuilder.CreateIndex(
@@ -330,7 +334,7 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "BaseEntity");
+                name: "Massage");
 
             migrationBuilder.DropTable(
                 name: "UserUser");
@@ -340,6 +344,9 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
 
             migrationBuilder.DropTable(
                 name: "Chat");
+
+            migrationBuilder.DropTable(
+                name: "Post");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

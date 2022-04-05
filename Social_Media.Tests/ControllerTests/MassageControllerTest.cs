@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities.Interfaces;
+using Social_Media.Data.Models.Entities_Identity;
 using Social_Media.EntityFramework;
 using Social_Media.Web.Controllers;
+using Social_Media.Web.Models.MassageViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,22 +45,27 @@ namespace Social_Media.Tests.ControllerTests
         public void CreateMassageTest()
         {
             var mock = GetMock();
-            var controller = new CrudMassageController(mock.Object);
+            var moqUser = GetMockIdentity();
+            var controller = new CrudMassageController(mock.Object, moqUser.Object);
 
-            var massage = new Massage
+            var viewModel = new MassageAndChatIdViewModel
             {
-                Discription = "Why!?",
-                CreateAt = DateTime.Now,
-                UpdateAt = DateTime.Now,
-                Id = Guid.Parse("11111110-1110-1110-1110-111111111110"),
-                UsingChat = ChatList().First()
+                Massage = new Massage
+                {
+                    Discription = "Why!?",
+                    CreateAt = DateTime.Now,
+                    UpdateAt = DateTime.Now,
+                    Id = Guid.Parse("11111110-1110-1110-1110-111111111110"),
+                    UsingChat = ChatList().First()
+                },
+                ChatId = Guid.Parse("11111111-1111-1111-1111-111111111111")
             };
-            var result = controller.CreateMassage(massage, ChatList().First().Id);
+            var result = controller.CreateMassage(viewModel, "Danial");
 
             var routeToCreateMassage = Assert.IsType<RedirectToActionResult>(result.Result);
             Assert.Equal("ChatingRoom", routeToCreateMassage.ActionName);
             Assert.Equal("Chat", routeToCreateMassage.ControllerName);
-            mock.Verify(moq => moq.CreateAsync(massage));
+            mock.Verify(moq => moq.CreateAsync(viewModel.Massage));
 
         }
 
@@ -65,17 +73,21 @@ namespace Social_Media.Tests.ControllerTests
         public void UpdateMassageTest()
         {
             var mock = GetMock();
-            var controller = new CrudMassageController(mock.Object);
+            var moqUser = GetMockIdentity();
+            var controller = new CrudMassageController(mock.Object, moqUser.Object);
 
-            var chatId = Guid.Parse("11111111-1111-1111-1111-111111111111");
-            var massage = new Massage
+            var viewModel = new MassageAndChatIdViewModel
             {
-                Discription = "I'm fine",
-                UpdateAt = DateTime.Now,
-                Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                Massage = new Massage
+                {
+                    Discription = "I'm fine",
+                    UpdateAt = DateTime.Now,
+                    Id = Guid.Parse("11111111-1111-1111-1111-111111111111"),
+                },
+                ChatId = Guid.Parse("11111111-1111-1111-1111-111111111111")
             };
-            var result = controller.UpdateMassage(massage, chatId);
-            var result2 = controller.UpdateMassage(massage, chatId, "Posts/");
+            var result = controller.UpdateMassage(viewModel);
+            var result2 = controller.UpdateMassage(viewModel, "Posts/");
 
             var routeToUpdateMassage = Assert.IsType<RedirectToActionResult>(result.Result);
             Assert.Equal("ChatingRoom", routeToUpdateMassage.ActionName);
@@ -90,7 +102,8 @@ namespace Social_Media.Tests.ControllerTests
         public void RemovetMassageTest()
         {
             var mock = GetMock();
-            var controller = new CrudMassageController(mock.Object);
+            var moqUser = GetMockIdentity();
+            var controller = new CrudMassageController(mock.Object, moqUser.Object);
 
             var massageId = Guid.Parse("11111111-1111-1111-1111-111111111111");
             var chatId = Guid.Parse("11111111-1111-1111-1111-111111111111");
@@ -111,6 +124,13 @@ namespace Social_Media.Tests.ControllerTests
             Mock<IRepositoryEntityFramework> mock = new Mock<IRepositoryEntityFramework>();
             mock.Setup(repo => repo.GetAll<Massage>()).Returns(MassageList().AsQueryable());
             return mock;
+        }
+
+        private Mock<UserManager<User>> GetMockIdentity()
+        {
+            var moqUser = new Mock<IUserStore<User>>();
+            var mgr = new Mock<UserManager<User>>(moqUser.Object, null, null, null, null, null, null, null, null);
+            return mgr;
         }
     }
 }

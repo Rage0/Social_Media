@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities.Interfaces;
+using Social_Media.Data.Models.Entities_Identity;
 using Social_Media.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -13,19 +15,21 @@ namespace Social_Media.Web.Controllers
     public class CrudPostWallController : Controller
     {
         private IRepositoryEntityFramework _contextEF;
-        public CrudPostWallController(IRepositoryEntityFramework entityFramework)
+        private UserManager<User> _userManager;
+
+        public CrudPostWallController(IRepositoryEntityFramework entityFramework, UserManager<User> userManager)
         {
             _contextEF = entityFramework;
+            _userManager = userManager;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreatePost(Post post, string returnUrl = "")
+        public async Task<IActionResult> CreatePost(Post post, string createrName, string returnUrl = "")
         {
             if (ModelState.IsValid)
             {
                 post.Liked = 0;
-
-                // Add a Creator
+                User user;
 
                 Chat chatForPost = new Chat()
                 {
@@ -33,7 +37,20 @@ namespace Social_Media.Web.Controllers
                     CreateAt = post.CreateAt,
                     UpdateAt = post.UpdateAt,
                     UserMassage = new List<Massage>(),
+
                 };
+
+                if (createrName != null)
+                {
+                    user = await _userManager.FindByNameAsync(createrName);
+                    post.CreaterId = user.Id;
+                    chatForPost.CreaterId = user.Id;
+                }
+                else
+                {
+                    return RedirectToAction("Posts", "PostWall");
+                }
+
 
                 post.UsingChat = chatForPost;
                 await _contextEF.CreateAsync(post);
@@ -103,7 +120,7 @@ namespace Social_Media.Web.Controllers
                     }
                 }
             }
-            return RedirectToAction("EditPost", "PostWall");
+            return RedirectToAction("EditPost", "PostWall", new {postId = post.Id});
         }
     }
 }

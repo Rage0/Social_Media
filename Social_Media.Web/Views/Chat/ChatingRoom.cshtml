@@ -6,21 +6,28 @@
 
 @foreach (Massage massage in Model.UserMassage ?? new List<Massage> {})
 {
-    <div style="border: solid 1px">
+    <div style="border: solid 1px;">
         <h3 style="margin: 10px;">@massage.Discription</h3>
+        <form asp-action="RemovetMassage" asp-controller="CrudMassage">
+            <input hidden="hidden" name="massageId" value="@massage.Id"/>
+            <input hidden="hidden" name="chatId" value="@Model.Id"/>
+            <button type="submit">X</button>
+        </form>
+        <h4>@massage.Creater.UserName</h4>
     </div>
 
 }
 <form asp-action="CreateMassage" asp-controller="CrudMassage">
     <tr>
         <td>
-            <label for="Discription"></label>
-            <input name="Discription" value=""/>
+            <input name="Massage.Discription" value=""/>
         </td>
     </tr>
     
-    <input hidden="hidden" name="CreateAt" value="@DateTime.Now.Date"/>
-    <input hidden="hidden" name="UpdateAt" value="@DateTime.Now"/>
+    <input hidden="hidden" name="Massage.CreateAt" value="@DateTime.Now.Date"/>
+    <input hidden="hidden" name="Massage.UpdateAt" value="@DateTime.Now"/>
+    <input hidden="hidden" name="ChatId" value="@Model.Id"/>
+    <input hidden="hidden" name="CreaterName" value="@Context.User.Identity.Name"/>
 
     <button type="submit">Send</button>
 </form>

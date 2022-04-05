@@ -12,7 +12,10 @@
     <h3>Discription: @post.Discription</h3>
     <h3>CreateAt: @post.CreateAt</h3>
     <h3>UpdateAt: @post.UpdateAt</h3>
-    <h3></h3>
+    @if (post.Creater != null)
+    {
+        <h5>Creater: @post.Creater.UserName </h5>
+    }
     <a asp-action="ChatingRoom" asp-controller="Chat" asp-route-chatId="@post.UsingChat.Id"><h4>Chat</h4></a>
     <a asp-action="EditPost" asp-controller="PostWall" asp-route-postId="@post.Id">EditPost</a>
     <form method="post" asp-action="RemovetPost" asp-controller="CrudPostWall">
@@ -25,5 +28,6 @@
     <input hidden="hidden" name="Discription" value="@newPost"/>
     <input hidden="hidden" name="CreateAt" value="@DateTime.Now.Date"/>
     <input hidden="hidden" name="UpdateAt" value="@DateTime.Now.Date"/>
+    <input hidden="hidden" name="CreaterName" value="@Context.User.Identity.Name"/>
     <button type="submit">CreatePost</button>
 </form>

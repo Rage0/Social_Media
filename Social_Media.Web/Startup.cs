@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,9 +41,20 @@ namespace Social_Media.Web
                 assembly => assembly.MigrationsAssembly("Social_Media.Migrations"));
             });
 
-            services.AddIdentityCore<User>().AddEntityFrameworkStores<AppIdentityContext>();
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.SignIn.RequireConfirmedEmail = false;
+            })
+            .AddEntityFrameworkStores<AppIdentityContext>()
+            .AddDefaultTokenProviders();
 
             services.AddTransient<IRepositoryEntityFramework, ContextEntityFramework>();
+            services.AddTransient<UserContextEntityFramework>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -51,20 +63,18 @@ namespace Social_Media.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseAuthentication();
-            app.UseStaticFiles();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseAuthentication();   
+            app.UseAuthorization();
+
+            app.UseStaticFiles();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "Posts",
-                    pattern: "{controller}/{action}/",
-                    defaults: new { controller = "PostWall", action = "Posts" }
-                    );
-                endpoints.MapControllerRoute(
+                    endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=PostWall}/{action=Posts}/{id?}"
                     );

@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities.Interfaces;
+using Social_Media.Data.Models.Entities_Identity;
 using Social_Media.EntityFramework;
 using Social_Media.Web.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Social_Media.Tests.ControllerTests
@@ -50,8 +50,10 @@ namespace Social_Media.Tests.ControllerTests
         public void CreateChatTest()
         {
             var moq = GetMock();
-            var controller = new CrudChatController(moq.Object);
-            var badController = new CrudChatController(moq.Object);
+            var moqUser = GetMockIdentity();
+
+            var controller = new CrudChatController(moq.Object, moqUser.Object);
+            var badController = new CrudChatController(moq.Object, moqUser.Object);
             badController.ModelState.AddModelError("Name", "Required");
 
             var chat = new Chat
@@ -59,8 +61,8 @@ namespace Social_Media.Tests.ControllerTests
                 Name = "New Chat 2",
                 Id = Guid.NewGuid(),
             };
-            var result = controller.CreateChat(chat);
-            var result2 = badController.CreateChat(new Chat());
+            var result = controller.CreateChat(chat, "Danial");
+            var result2 = badController.CreateChat(new Chat(), "Danial");
 
             var routeToCreateChat = Assert.IsType<RedirectToActionResult>(result.Result);
             Assert.Equal("Chats/", routeToCreateChat.ActionName);
@@ -75,7 +77,8 @@ namespace Social_Media.Tests.ControllerTests
         public void UpdateChatTest()
         {
             var moq = GetMock();
-            var controller = new CrudChatController(moq.Object);
+            var moqUser = GetMockIdentity();
+            var controller = new CrudChatController(moq.Object, moqUser.Object);
 
             var chat = new Chat
             {
@@ -104,7 +107,8 @@ namespace Social_Media.Tests.ControllerTests
         public void RemovetChatTest()
         {
             var moq = GetMock();
-            var controller = new CrudChatController(moq.Object);
+            var moqUser = GetMockIdentity();
+            var controller = new CrudChatController(moq.Object, moqUser.Object);
 
             var chatId = Guid.Parse("11111111-1111-1111-1111-111111111111");
             var result = controller.RemovetChat(chatId);
@@ -126,13 +130,10 @@ namespace Social_Media.Tests.ControllerTests
             var moq = GetMock();
             var controller = new ChatController(moq.Object);
 
-            var result = controller.ChatingRoom(ChatList().First().Id);
             var result2 = controller.ChatingRoom(Guid.NewGuid());
 
-            var viewModel = (result as ViewResult).ViewData?.Model as IEnumerable<Massage>;
             var routeToViewChatingRoom = Assert.IsType<RedirectToActionResult>(result2);
             Assert.Equal("Chats", routeToViewChatingRoom.ActionName);
-            Assert.NotNull(viewModel);
         }
 
         private Mock<IRepositoryEntityFramework> GetMock()
@@ -140,6 +141,12 @@ namespace Social_Media.Tests.ControllerTests
             var moq = new Mock<IRepositoryEntityFramework>();
             moq.Setup(repo => repo.GetAll<Chat>()).Returns(ChatList().AsQueryable);
             return moq;
+        }
+        private Mock<UserManager<User>> GetMockIdentity()
+        {
+            var moqUser = new Mock<IUserStore<User>>();
+            var mgr = new Mock<UserManager<User>>(moqUser.Object, null, null, null, null, null, null, null, null);
+            return mgr;
         }
     }
 }

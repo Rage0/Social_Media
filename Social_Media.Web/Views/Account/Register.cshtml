@@ -1,0 +1,33 @@
+﻿@model RegisterViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<form asp-action="CreateUser" asp-controller="CrudAccount">
+    <tr>
+        <td>
+            <label asp-for="Name"></label>
+            <input asp-for="Name" value=""/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label asp-for="Email"></label>
+            <input asp-for="Email" value=""/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label asp-for="Password"></label>
+            <input asp-for="Password" value=""/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label asp-for="PasswordConfirm"></label>
+            <input asp-for="PasswordConfirm" value=""/>
+        </td>
+    </tr>
+    <button type="submit">Register</button>
+</form>

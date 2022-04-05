@@ -10,15 +10,15 @@ using Social_Media.Data;
 namespace Social_Media.Migrations.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20220316144528_Initial3")]
-    partial class Initial3
+    [Migration("20220402073553_Initial2")]
+    partial class Initial2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.14")
+                .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("Social_Media.Data.Models.Entities.Chat", b =>
@@ -30,7 +30,11 @@ namespace Social_Media.Migrations.Migrations
                     b.Property<DateTime?>("CreateAt")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<string>("CreaterId")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<Guid>("PostId")
@@ -39,20 +43,10 @@ namespace Social_Media.Migrations.Migrations
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UserId1")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("PostId")
                         .IsUnique();
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Chats");
                 });
@@ -201,14 +195,6 @@ namespace Social_Media.Migrations.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", null)
-                        .WithMany("MemberChats")
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", null)
-                        .WithMany("OwnerChats")
-                        .HasForeignKey("UserId1");
-
                     b.Navigation("Post");
                 });
 
@@ -265,10 +251,6 @@ namespace Social_Media.Migrations.Migrations
             modelBuilder.Entity("Social_Media.Data.Models.Entities_Identity.User", b =>
                 {
                     b.Navigation("Massages");
-
-                    b.Navigation("MemberChats");
-
-                    b.Navigation("OwnerChats");
 
                     b.Navigation("Posts");
                 });

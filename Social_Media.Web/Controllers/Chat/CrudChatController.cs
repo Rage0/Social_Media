@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities.Interfaces;
 using Social_Media.Data.Models.Entities_Identity;
@@ -13,22 +14,30 @@ namespace Social_Media.Web.Controllers
     public class CrudChatController : Controller
     {
         private IRepositoryEntityFramework _contextEF;
-        public CrudChatController(IRepositoryEntityFramework entityFramework)
+        private UserManager<User> _userManager;
+        public CrudChatController(IRepositoryEntityFramework entityFramework, UserManager<User> userMangaer)
         {
             _contextEF = entityFramework;
+            _userManager = userMangaer;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateChat(Chat chat, string returnUrl = "Chats/")
+        public async Task<IActionResult> CreateChat(Chat chat, string createrName, string returnUrl = "Chats/")
         {
             if (ModelState.IsValid)
             {
+                User user = await _userManager.FindByNameAsync(createrName);
+
                 chat.CreateAt = DateTime.Now;
                 chat.UpdateAt = DateTime.Now;
                 chat.Members = new List<User>();
                 chat.UserMassage = new List<Massage>();
+                if (user != null)
+                {
+                    chat.CreaterId = user.Id;
+                }
+                
 
-                // Add a Creator
                 await _contextEF.CreateAsync(chat);
                 return RedirectToAction(returnUrl);
             }
@@ -59,7 +68,7 @@ namespace Social_Media.Web.Controllers
                 }
 
             }
-            return RedirectToAction("EditChat", "Chat");
+            return RedirectToAction("EditChat", "Chat", new {chatId = chat.Id});
         }
 
         [HttpPost]

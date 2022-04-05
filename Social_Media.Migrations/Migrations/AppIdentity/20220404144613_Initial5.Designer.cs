@@ -10,31 +10,16 @@ using Social_Media.Data;
 namespace Social_Media.Migrations.Migrations.AppIdentity
 {
     [DbContext(typeof(AppIdentityContext))]
-    [Migration("20220309150558_Initial2")]
-    partial class Initial2
+    [Migration("20220404144613_Initial5")]
+    partial class Initial5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.14")
+                .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-            modelBuilder.Entity("ChatUser", b =>
-                {
-                    b.Property<Guid>("MemberChatsId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("MembersId")
-                        .HasColumnType("text");
-
-                    b.HasKey("MemberChatsId", "MembersId");
-
-                    b.HasIndex("MembersId");
-
-                    b.ToTable("ChatUser");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -166,65 +151,6 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Chat", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("CreateAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("CreaterId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreaterId");
-
-                    b.ToTable("Chat");
-                });
-
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Interfaces.BaseEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime?>("CreateAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Liked")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdateAt")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<Guid?>("UsingChatId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UsingChatId");
-
-                    b.ToTable("BaseEntity");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("BaseEntity");
-                });
-
             modelBuilder.Entity("Social_Media.Data.Models.Entities_Identity.User", b =>
                 {
                     b.Property<string>("Id")
@@ -307,53 +233,6 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                     b.ToTable("UserUser");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Massage", b =>
-                {
-                    b.HasBaseType("Social_Media.Data.Models.Entities.Interfaces.BaseEntity");
-
-                    b.Property<string>("CreaterId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Discription")
-                        .HasColumnType("text");
-
-                    b.HasIndex("CreaterId");
-
-                    b.HasDiscriminator().HasValue("Massage");
-                });
-
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Post", b =>
-                {
-                    b.HasBaseType("Social_Media.Data.Models.Entities.Interfaces.BaseEntity");
-
-                    b.Property<string>("CreaterId")
-                        .HasColumnType("text")
-                        .HasColumnName("Post_CreaterId");
-
-                    b.Property<string>("Discription")
-                        .HasColumnType("text")
-                        .HasColumnName("Post_Discription");
-
-                    b.HasIndex("CreaterId");
-
-                    b.HasDiscriminator().HasValue("Post");
-                });
-
-            modelBuilder.Entity("ChatUser", b =>
-                {
-                    b.HasOne("Social_Media.Data.Models.Entities.Chat", null)
-                        .WithMany()
-                        .HasForeignKey("MemberChatsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", null)
-                        .WithMany()
-                        .HasForeignKey("MembersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -405,24 +284,6 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Chat", b =>
-                {
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", "Creater")
-                        .WithMany("OwnerChats")
-                        .HasForeignKey("CreaterId");
-
-                    b.Navigation("Creater");
-                });
-
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Interfaces.BaseEntity", b =>
-                {
-                    b.HasOne("Social_Media.Data.Models.Entities.Chat", "UsingChat")
-                        .WithMany("UserMassage")
-                        .HasForeignKey("UsingChatId");
-
-                    b.Navigation("UsingChat");
-                });
-
             modelBuilder.Entity("UserUser", b =>
                 {
                     b.HasOne("Social_Media.Data.Models.Entities_Identity.User", null)
@@ -436,38 +297,6 @@ namespace Social_Media.Migrations.Migrations.AppIdentity
                         .HasForeignKey("UserFriendsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Massage", b =>
-                {
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", "Creater")
-                        .WithMany("Massages")
-                        .HasForeignKey("CreaterId");
-
-                    b.Navigation("Creater");
-                });
-
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Post", b =>
-                {
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", "Creater")
-                        .WithMany("Posts")
-                        .HasForeignKey("CreaterId");
-
-                    b.Navigation("Creater");
-                });
-
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Chat", b =>
-                {
-                    b.Navigation("UserMassage");
-                });
-
-            modelBuilder.Entity("Social_Media.Data.Models.Entities_Identity.User", b =>
-                {
-                    b.Navigation("Massages");
-
-                    b.Navigation("OwnerChats");
-
-                    b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618
         }

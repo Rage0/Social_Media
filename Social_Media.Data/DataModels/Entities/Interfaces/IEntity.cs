@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Social_Media.Data.Models.Entities_Identity;
+using System;
 
 
 namespace Social_Media.Data.Models.Entities.Interfaces
@@ -12,5 +9,6 @@ namespace Social_Media.Data.Models.Entities.Interfaces
         public Guid Id { get; set; }
         public DateTime? CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
+        public User Creater { get; set; }
     }
 }

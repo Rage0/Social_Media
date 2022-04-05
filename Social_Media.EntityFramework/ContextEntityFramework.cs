@@ -2,9 +2,11 @@
 using Social_Media.Data;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities.Interfaces;
+using Social_Media.Data.Models.Entities_Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,6 +30,7 @@ namespace Social_Media.EntityFramework
         {
             await _context.Set<T>().AddAsync(entity);
             await SaveChagesAsync();
+            
         }
 
         public async Task RemovetAsync<T>(T entity) where T : class, IEntity

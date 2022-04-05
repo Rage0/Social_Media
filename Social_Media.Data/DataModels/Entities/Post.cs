@@ -1,17 +1,16 @@
-﻿using Social_Media.Data.Models.Entities.Interfaces;
+﻿using System;
 using Social_Media.Data.Models.Entities_Identity;
-using System;
-using System.Collections.Generic;
+using Social_Media.Data.Models.Entities.Interfaces;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Social_Media.Data.Models.Entities
 {
-    public class Massage : IEntity
+    public class Post : IEntity
     {
+        public string Title { get; set; }
+        public string RouteToPhoto { get; set; }
+        public int Liked { get; set; }
         [Required]
         public string Discription { get; set; }
         [Required]
@@ -19,6 +18,8 @@ namespace Social_Media.Data.Models.Entities
         public DateTime? CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
         public Chat UsingChat { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public string CreaterId { get; set; }
         public User Creater { get; set; }
     }
 }

@@ -22,7 +22,10 @@ namespace Social_Media.Web.Controllers
 
         public IActionResult Posts()
         {
-            return View(_contextEF.GetAll<Post>().Include(post => post.UsingChat).AsEnumerable());
+            return View(_contextEF.GetAll<Post>()
+                .Include(post => post.UsingChat)
+                .Include(post => post.Creater)
+                .AsEnumerable());
         }
         
         public IActionResult CreatePost()

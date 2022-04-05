@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Social_Media.Data;
@@ -9,9 +10,10 @@ using Social_Media.Data;
 namespace Social_Media.Migrations.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220401182132_Initial1")]
+    partial class Initial1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +46,6 @@ namespace Social_Media.Migrations.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CreaterId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -77,7 +78,6 @@ namespace Social_Media.Migrations.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CreaterId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<string>("Discription")
@@ -186,7 +186,7 @@ namespace Social_Media.Migrations.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("UserUser", b =>
@@ -201,7 +201,7 @@ namespace Social_Media.Migrations.Migrations
 
                     b.HasIndex("UserFriendsId");
 
-                    b.ToTable("FriendsAndFollowingUser");
+                    b.ToTable("UserUser");
                 });
 
             modelBuilder.Entity("ChatUser", b =>

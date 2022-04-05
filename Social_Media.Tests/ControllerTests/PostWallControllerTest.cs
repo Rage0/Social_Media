@@ -9,6 +9,11 @@ using System.Linq;
 using System;
 using Social_Media.Data.Models.Entities.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Social_Media.Data.Models.Entities_Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System.Security.Principal;
 
 namespace Social_Media.Tests.ControllerTests
 {
@@ -55,8 +60,9 @@ namespace Social_Media.Tests.ControllerTests
         public void CreatePostTest()
         {
             var mock = GetMock();
-            var controller = new CrudPostWallController(mock.Object);
-            var badController = new CrudPostWallController(mock.Object);
+            var moqUser = GetMockIdentity();
+            var controller = new CrudPostWallController(mock.Object, moqUser.Object);
+            var badController = new CrudPostWallController(mock.Object, moqUser.Object);
             badController.ModelState.AddModelError("Discription", "Required");
 
             Post post = new Post() 
@@ -68,9 +74,9 @@ namespace Social_Media.Tests.ControllerTests
                 Id = Guid.NewGuid(),
             };
 
-            var result = controller.CreatePost(post);
-            var result2 = badController.CreatePost(new Post());
-            var result3 = controller.CreatePost(post, "Posts/");
+            var result = controller.CreatePost(post, "Danial");
+            var result2 = badController.CreatePost(new Post() { }, "Danial");
+            var result3 = controller.CreatePost(post,"Danial", "Posts/");
 
 
             var routeToCreatePost = Assert.IsType<RedirectToActionResult>(result.Result);
@@ -90,8 +96,9 @@ namespace Social_Media.Tests.ControllerTests
         public void UpdatePostTest()
         {
             var mock = GetMock();
-            var controller = new CrudPostWallController(mock.Object);
-            var badController = new CrudPostWallController(mock.Object);
+            var moqUser = GetMockIdentity();
+            var controller = new CrudPostWallController(mock.Object, moqUser.Object);
+            var badController = new CrudPostWallController(mock.Object, moqUser.Object);
 
             var post = new Post()
             {
@@ -119,7 +126,8 @@ namespace Social_Media.Tests.ControllerTests
         public void RemovetPostTest()
         {
             var mock = GetMock();
-            var controller = new CrudPostWallController(mock.Object);
+            var moqUser = GetMockIdentity();
+            var controller = new CrudPostWallController(mock.Object, moqUser.Object);
 
             var postId = Guid.Parse("11111111-1111-1111-1111-111111111111");
             var result = controller.RemovetPost(postId);
@@ -139,6 +147,12 @@ namespace Social_Media.Tests.ControllerTests
             Mock<IRepositoryEntityFramework> mock = new Mock<IRepositoryEntityFramework>();
             mock.Setup(repo => repo.GetAll<Post>()).Returns(PostList().AsQueryable());
             return mock;
+        }
+        private Mock<UserManager<User>> GetMockIdentity()
+        {
+            var moqUser = new Mock<IUserStore<User>>();
+            var mgr = new Mock<UserManager<User>>(moqUser.Object, null, null, null, null, null, null, null, null);
+            return mgr;
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Social_Media.Data.Models.Entities;
 using Social_Media.Data.Models.Entities.Interfaces;
+using Social_Media.Data.Models.Entities_Identity;
 using Social_Media.EntityFramework;
+using Social_Media.Web.Models.MassageViewModels;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,21 +14,35 @@ namespace Social_Media.Web.Controllers
     public class CrudMassageController : Controller
     {
         private IRepositoryEntityFramework _contextEF;
-        public CrudMassageController(IRepositoryEntityFramework entityFramework)
+        private UserManager<User> _userManager;
+        public CrudMassageController(IRepositoryEntityFramework entityFramework, UserManager<User> userMangaer)
         {
             _contextEF = entityFramework;
+            _userManager = userMangaer;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMassage(Massage massage, Guid chatId, string returnUrl = "")
+        public async Task<IActionResult> CreateMassage(MassageAndChatIdViewModel viewModel, string createrName, string returnUrl = "")
         {
             if (ModelState.IsValid)
             {
-                await _contextEF.CreateAsync(massage);
+                Chat chat = _contextEF.GetAll<Chat>().FirstOrDefault(chat => chat.Id == viewModel.ChatId);
+                User user = await _userManager.FindByNameAsync(createrName);
+                if (chat != null)
+                {
+                    viewModel.Massage.UsingChat = chat;
+                }
+
+                if (user != null)
+                {
+                    viewModel.Massage.CreaterId = user.Id;
+                }
+
+                await _contextEF.CreateAsync(viewModel.Massage);
 
                 if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
                 {
-                    return RedirectToAction("ChatingRoom", "Chat", chatId);
+                    return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId});
                 }
                 else
                 {
@@ -33,24 +50,24 @@ namespace Social_Media.Web.Controllers
                 }
             }
             ViewBag.Exeption = "Error";
-            return RedirectToAction("ChatingRoom", "Chat", chatId);
+            return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
         }
         
         [HttpPost]
-        public async Task<IActionResult> UpdateMassage(Massage massage, Guid chatId, string returnUrl = "")
+        public async Task<IActionResult> UpdateMassage(MassageAndChatIdViewModel viewModel, string returnUrl = "")
         {
             if (ModelState.IsValid)
             {
-                Massage massageContext = _contextEF.GetAll<Massage>().FirstOrDefault(massageContext => massageContext.Id == massage.Id);
+                Massage massageContext = _contextEF.GetAll<Massage>().FirstOrDefault(massageContext => massageContext.Id == viewModel.Massage.Id);
                 if (massageContext != null)
                 {
                     massageContext.UpdateAt = DateTime.Now;
-                    massageContext.Discription = massage.Discription;
+                    massageContext.Discription = viewModel.Massage.Discription;
                     await _contextEF.UpdateAsync(massageContext);
 
                     if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
                     {
-                        return RedirectToAction("ChatingRoom", "Chat", chatId);
+                        return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
                     }
                     else
                     {
@@ -63,7 +80,7 @@ namespace Social_Media.Web.Controllers
                 }
             }
             ViewBag.Exeption = "Error";
-            return RedirectToAction("ChatingRoom", "Chat", chatId);
+            return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
         }
 
         [HttpPost]
@@ -78,7 +95,7 @@ namespace Social_Media.Web.Controllers
 
                     if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
                     {
-                        return RedirectToAction("ChatingRoom", "Chat", chatId);
+                        return RedirectToAction("ChatingRoom", "Chat", new { chatId = chatId });
                     }
                     else
                     {
@@ -91,7 +108,7 @@ namespace Social_Media.Web.Controllers
                 }
             }
             ViewBag.Exeption = "Error";
-            return RedirectToAction("ChatingRoom", "Chat", chatId);
+            return RedirectToAction("ChatingRoom", "Chat", new { chatId = chatId });
         }
     }
 }

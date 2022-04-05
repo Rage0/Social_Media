@@ -8,8 +8,27 @@
 <body>
     <div class="content">
         <div class="item-block-horizontal">
+            <div>
+                <a asp-action="Login" asp-controller="Account">Log in</a>
+                <a asp-action="Register" asp-controller="Account">Register</a>
+                @if (Context.User.Identity.IsAuthenticated)
+                {
+                    <a asp-action="Logout" asp-controller="Account">Log out</a>
+                }
+            </div>
+            @if (Context.User.Identity.Name != null)
+            {
+                <div>
+                    <h4>Name: @Context.User.Identity.Name</h4>
+                    <a asp-action="EditUser" asp-controller="Account">Edit</a>
+                    <form asp-action="RemovetUser" asp-controller="CrudAccount">
+                        <input hidden="hidden" name="userName" value="@Context.User.Identity.Name">
+                        <button type="submit">Remove</button>
+                    </form>
+                </div>
+            }
         </div>
-        <div class="content-include">
+        <div class="content-include" style="overflow:auto">
             @RenderBody()
         </div>
     </div>
