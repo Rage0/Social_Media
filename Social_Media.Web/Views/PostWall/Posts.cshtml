@@ -3,29 +3,41 @@
 @{
     Layout = "_Layout";
     ViewBag.Title = "Posts";
-    string newPost = "Post 2";
+    string newPost = "Post";
 }
 
 @foreach (Post post in Model ?? new Post[]{ })
 {
-    <h3>Title: @post.Title</h3>
-    <h3>Discription: @post.Discription</h3>
-    <h3>CreateAt: @post.CreateAt</h3>
-    <h3>UpdateAt: @post.UpdateAt</h3>
-    @if (post.Creater != null)
-    {
-        <h5>Creater: @post.Creater.UserName </h5>
-    }
-    <a asp-action="ChatingRoom" asp-controller="Chat" asp-route-chatId="@post.UsingChat.Id"><h4>Chat</h4></a>
-    <a asp-action="EditPost" asp-controller="PostWall" asp-route-postId="@post.Id">EditPost</a>
-    <form method="post" asp-action="RemovetPost" asp-controller="CrudPostWall">
-        <input hidden="hidden" name="postId" value="@post.Id"/>
-        <button type="submit">RemovetPost</button>
-    </form>
+    <div class="card">
+        <div class="card-body">
+            <div class="list-group list-group-flush">
+                <div class="list-group-item"><h3 class="card-title text-center ">@post.Title</h3></div>
+                <div class="list-group-item"><h3 class="card-text">@post.Discription</h3></div>
+                <div class="text-end">
+                    @if (post.Creater != null)
+                    {
+                        <h5>Creater: @post.Creater.UserName </h5>
+                    }
+                    <h6>CreateAt: @post.CreateAt</h6>
+                    <h6>UpdateAt: @post.UpdateAt</h6>
+            
+                    <a asp-action="ChatingRoom" asp-controller="Chat" asp-route-chatId="@post.UsingChat.Id"><h6>Comments</h6></a>
+                    <form asp-action="RemovetPost" asp-controller="CrudPostWall">
+                        <input hidden="hidden" name="PostId" value="@post.Id">
+                        <button type="submit">Remove</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 <form method="post" asp-action="CreatePost" asp-controller="CrudPostWall">
     <input  hidden="hidden" name="Title" value="@newPost"/>
-    <input hidden="hidden" name="Discription" value="@newPost"/>
+
+    <input hidden="hidden" name="Discription" value="С другой стороны новая модель организационной деятельности в значительной степени обуславливает создание модели развития
+Таким образом, новая модель организационной деятельности представляет собой интересный эксперимент проверки позиций, занимаемых участниками в отношении поставленных задач
+Повседневная практика показывает, что постоянный количественный рост и сфера нашей активности позволяет выполнить важнейшие задания по разработке новых..."/>
+
     <input hidden="hidden" name="CreateAt" value="@DateTime.Now.Date"/>
     <input hidden="hidden" name="UpdateAt" value="@DateTime.Now.Date"/>
     <input hidden="hidden" name="CreaterName" value="@Context.User.Identity.Name"/>

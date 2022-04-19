@@ -1,8 +1,8 @@
-﻿using Social_Media.Data.Models.Entities;
-using Social_Media.Data.Models.Entities_Identity;
+﻿using Social_Media.Data.DataModels.Entities;
+using Social_Media.Data.DataModels.Entities_Identity;
 using System.Collections.Generic;
 
-namespace Social_Media.Web.Models.UserViewModels
+namespace Social_Media.Data.ViewModels.UserViewModels
 {
     public class EditUserViewModel
     {

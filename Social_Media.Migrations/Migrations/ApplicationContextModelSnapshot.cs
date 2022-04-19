@@ -19,22 +19,22 @@ namespace Social_Media.Migrations.Migrations
                 .HasAnnotation("ProductVersion", "5.0.15")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-            modelBuilder.Entity("ChatUser", b =>
+            modelBuilder.Entity("PrivateChatUser", b =>
                 {
-                    b.Property<Guid>("MemberChatsId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("MembersId")
                         .HasColumnType("text");
 
-                    b.HasKey("MemberChatsId", "MembersId");
+                    b.Property<Guid>("PrivateChatsId")
+                        .HasColumnType("uuid");
 
-                    b.HasIndex("MembersId");
+                    b.HasKey("MembersId", "PrivateChatsId");
 
-                    b.ToTable("MemberAndMemberChats");
+                    b.HasIndex("PrivateChatsId");
+
+                    b.ToTable("MembersToPrivateChat");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Chat", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.Chat", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,14 +44,16 @@ namespace Social_Media.Migrations.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CreaterId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsOnlyFriends")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<Guid>("PostId")
+                    b.Property<Guid?>("PostId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdateAt")
@@ -67,7 +69,7 @@ namespace Social_Media.Migrations.Migrations
                     b.ToTable("Chats");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Massage", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.Massage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,12 +79,14 @@ namespace Social_Media.Migrations.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CreaterId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("text");
 
                     b.Property<string>("Discription")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<Guid?>("PrivateChatId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("timestamp without time zone");
@@ -94,12 +98,14 @@ namespace Social_Media.Migrations.Migrations
 
                     b.HasIndex("CreaterId");
 
+                    b.HasIndex("PrivateChatId");
+
                     b.HasIndex("UsingChatId");
 
                     b.ToTable("Massages");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Post", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.Post", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -134,7 +140,24 @@ namespace Social_Media.Migrations.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities_Identity.User", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.PrivateChat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("CreateAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime?>("UpdateAt")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PrivateChats");
+                });
+
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities_Identity.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -204,59 +227,65 @@ namespace Social_Media.Migrations.Migrations
                     b.ToTable("FriendsAndFollowingUser");
                 });
 
-            modelBuilder.Entity("ChatUser", b =>
+            modelBuilder.Entity("PrivateChatUser", b =>
                 {
-                    b.HasOne("Social_Media.Data.Models.Entities.Chat", null)
-                        .WithMany()
-                        .HasForeignKey("MemberChatsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", null)
+                    b.HasOne("Social_Media.Data.DataModels.Entities_Identity.User", null)
                         .WithMany()
                         .HasForeignKey("MembersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Social_Media.Data.DataModels.Entities.PrivateChat", null)
+                        .WithMany()
+                        .HasForeignKey("PrivateChatsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Chat", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.Chat", b =>
                 {
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", "Creater")
+                    b.HasOne("Social_Media.Data.DataModels.Entities_Identity.User", "Creater")
                         .WithMany("OwnerChats")
                         .HasForeignKey("CreaterId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Social_Media.Data.Models.Entities.Post", "Post")
+                    b.HasOne("Social_Media.Data.DataModels.Entities.Post", "Post")
                         .WithOne("UsingChat")
-                        .HasForeignKey("Social_Media.Data.Models.Entities.Chat", "PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Social_Media.Data.DataModels.Entities.Chat", "PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Creater");
 
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Massage", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.Massage", b =>
                 {
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", "Creater")
+                    b.HasOne("Social_Media.Data.DataModels.Entities_Identity.User", "Creater")
                         .WithMany("Massages")
                         .HasForeignKey("CreaterId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Social_Media.Data.Models.Entities.Chat", "UsingChat")
+                    b.HasOne("Social_Media.Data.DataModels.Entities.PrivateChat", "PrivateChat")
+                        .WithMany("Massages")
+                        .HasForeignKey("PrivateChatId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Social_Media.Data.DataModels.Entities.Chat", "UsingChat")
                         .WithMany("UserMassage")
                         .HasForeignKey("UsingChatId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Creater");
 
+                    b.Navigation("PrivateChat");
+
                     b.Navigation("UsingChat");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Post", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.Post", b =>
                 {
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", "Creater")
+                    b.HasOne("Social_Media.Data.DataModels.Entities_Identity.User", "Creater")
                         .WithMany("Posts")
                         .HasForeignKey("CreaterId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -266,30 +295,35 @@ namespace Social_Media.Migrations.Migrations
 
             modelBuilder.Entity("UserUser", b =>
                 {
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", null)
+                    b.HasOne("Social_Media.Data.DataModels.Entities_Identity.User", null)
                         .WithMany()
                         .HasForeignKey("FollowingUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Social_Media.Data.Models.Entities_Identity.User", null)
+                    b.HasOne("Social_Media.Data.DataModels.Entities_Identity.User", null)
                         .WithMany()
                         .HasForeignKey("UserFriendsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Chat", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.Chat", b =>
                 {
                     b.Navigation("UserMassage");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities.Post", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.Post", b =>
                 {
                     b.Navigation("UsingChat");
                 });
 
-            modelBuilder.Entity("Social_Media.Data.Models.Entities_Identity.User", b =>
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities.PrivateChat", b =>
+                {
+                    b.Navigation("Massages");
+                });
+
+            modelBuilder.Entity("Social_Media.Data.DataModels.Entities_Identity.User", b =>
                 {
                     b.Navigation("Massages");
 

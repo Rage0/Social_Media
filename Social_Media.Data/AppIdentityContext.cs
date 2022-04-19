@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Social_Media.Data.Models.Entities_Identity;
+using Social_Media.Data.DataModels.Entities_Identity;
 
 namespace Social_Media.Data
 {
@@ -14,6 +14,13 @@ namespace Social_Media.Data
     {
         public AppIdentityContext(DbContextOptions<AppIdentityContext> options) : base(options)
         {
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
+
+            base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

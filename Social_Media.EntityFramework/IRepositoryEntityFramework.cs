@@ -1,4 +1,4 @@
-﻿using Social_Media.Data.Models.Entities.Interfaces;
+﻿using Social_Media.Data.DataModels.Entities.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Social_Media.Data.Models.Entities_Identity;
-using Social_Media.Web.Models.UserViewModels;
+using Microsoft.EntityFrameworkCore;
+using Social_Media.Data.DataModels.Entities_Identity;
+using Social_Media.Data.ViewModels.UserViewModels;
+using Social_Media.EntityFramework;
+
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
@@ -11,14 +15,18 @@ namespace Social_Media.Web.Controllers
     {
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
+        private UserContextEntityFramework _userContextEF;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager,
+            SignInManager<User> signInManager,
+            UserContextEntityFramework userContextEF)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _userContextEF = userContextEF;
         }
 
-
+        [AllowAnonymous]
         public IActionResult Register()
         {
             return View(new RegisterViewModel());
@@ -33,6 +41,25 @@ namespace Social_Media.Web.Controllers
         public IActionResult Login(string returnUrl = "")
         {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
+        }
+
+        public async Task<IActionResult> AllUsersAsync()
+        {
+            User user = await _userContextEF
+                .GetAllUsers()
+                .Include(userInclude => userInclude.UserFriends)
+                .FirstOrDefaultAsync(user => user.UserName == HttpContext.User.Identity.Name);
+
+            return View(new UserAndAllUsersViewModel
+            {
+                UsersFromContext = _userContextEF.GetAllUsers()
+                .Where(userContext =>
+                       userContext.UserName != user.UserName &&
+                       !user.UserFriends.Contains(userContext))
+                .ToList(),
+
+                User = user
+            });
         }
 
         [HttpPost]
@@ -55,7 +82,7 @@ namespace Social_Media.Web.Controllers
                         }
                         else
                         {
-                            return RedirectToRoute(model.ReturnUrl);
+                            return Redirect(model.ReturnUrl);
                         }
                     }
                     else
@@ -71,6 +98,36 @@ namespace Social_Media.Web.Controllers
                 }
             }
             return View(model);
+        }
+
+        public async Task<IActionResult> MyProfile(string userName)
+        {
+            User user = await _userContextEF.GetAllUsers()
+                .Include(user => user.Posts)
+                .Include(user => user.UserFriends)
+                .Include(user => user.FollowingUser)
+                .FirstOrDefaultAsync(user => user.UserName == userName);
+
+            if (user != null)
+            {
+                return View(user);
+            }
+            return RedirectToAction("Login");
+        }
+
+        public async Task<IActionResult> MyFriends(string userName)
+        {
+            User user = await _userContextEF.GetAllUsers()
+                .Include(user => user.UserFriends)
+                    .ThenInclude(userAnother => userAnother.PrivateChats)
+                .Include(user => user.PrivateChats)
+                .FirstOrDefaultAsync(user => user.UserName == userName);
+
+            if (user != null)
+            {
+                return View(user);
+            }
+            return RedirectToAction("Posts", "PostWall");
         }
 
         public async Task<IActionResult> Logout()

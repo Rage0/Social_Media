@@ -7,12 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Social_Media.Data;
-using Social_Media.Data.Models.Entities_Identity;
+using Social_Media.Data.DataModels.Entities_Identity;
 using Social_Media.EntityFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Social_Media.Web
 {

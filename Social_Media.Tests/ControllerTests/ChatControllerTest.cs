@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Social_Media.Data.Models.Entities;
-using Social_Media.Data.Models.Entities.Interfaces;
-using Social_Media.Data.Models.Entities_Identity;
+using Social_Media.Data.DataModels.Entities;
+using Social_Media.Data.DataModels.Entities_Identity;
 using Social_Media.EntityFramework;
 using Social_Media.Web.Controllers;
 using System;
@@ -65,11 +64,11 @@ namespace Social_Media.Tests.ControllerTests
             var result2 = badController.CreateChat(new Chat(), "Danial");
 
             var routeToCreateChat = Assert.IsType<RedirectToActionResult>(result.Result);
-            Assert.Equal("Chats/", routeToCreateChat.ActionName);
+            Assert.Equal("Chats", routeToCreateChat.ActionName);
             moq.Verify(mock => mock.CreateAsync(chat));
 
             var routeToViewCreate = Assert.IsType<RedirectToActionResult>(result2.Result);
-            Assert.Equal("CreateChat", routeToViewCreate.ActionName);
+            Assert.Equal("Chats", routeToViewCreate.ActionName);
             Assert.Equal("Chat", routeToViewCreate.ControllerName);
         }
 

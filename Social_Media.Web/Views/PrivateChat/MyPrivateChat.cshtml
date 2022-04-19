@@ -1,0 +1,36 @@
+﻿@model IEnumerable<PrivateChat>
+
+@{
+    Layout = "_Layout";
+    string userName = Context.User.Identity.Name;
+}
+
+@foreach (PrivateChat privateChat in Model)
+{
+    <div>
+        @if (privateChat.Members.FirstOrDefault(user => user.UserName != userName) != null || 
+        privateChat.Members.Count > 1)
+        {
+            <h4>User: @privateChat.Members.FirstOrDefault(user => user.UserName != userName)</h4>
+        }
+        else
+        {
+            <h4>User: (Delete Account) </h4>
+        }
+
+        @if (privateChat.Massages != null)
+        {
+            <h5>Last massage: @privateChat.Massages.Last().Discription</h5>
+        }
+        else
+        {
+            <h5>Last massage: <span class="text-secondary">Nothing</span></h5>
+        }
+        <form method="get" asp-action="PrivateChatingRoom" asp-controller="PrivateChat">
+               <input hidden="hidden" name="UserName" value="@userName">
+               <input hidden="hidden" name="FriendName" 
+               value="@privateChat.Members.FirstOrDefault(privateChatContext => privateChatContext.UserName != userName)">
+               <button type="submit">Send massage</button>
+        </form>
+    </div>
+}

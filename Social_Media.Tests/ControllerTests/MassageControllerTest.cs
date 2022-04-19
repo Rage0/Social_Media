@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Social_Media.Data.Models.Entities;
-using Social_Media.Data.Models.Entities.Interfaces;
-using Social_Media.Data.Models.Entities_Identity;
+using Social_Media.Data.DataModels.Entities;
+using Social_Media.Data.DataModels.Entities.Interfaces;
+using Social_Media.Data.DataModels.Entities_Identity;
+using Social_Media.Data.ViewModels.MassageViewModels;
 using Social_Media.EntityFramework;
 using Social_Media.Web.Controllers;
-using Social_Media.Web.Models.MassageViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,7 +60,7 @@ namespace Social_Media.Tests.ControllerTests
                 },
                 ChatId = Guid.Parse("11111111-1111-1111-1111-111111111111")
             };
-            var result = controller.CreateMassage(viewModel, "Danial");
+            var result = controller.CreateMassageToChat(viewModel, "Danial");
 
             var routeToCreateMassage = Assert.IsType<RedirectToActionResult>(result.Result);
             Assert.Equal("ChatingRoom", routeToCreateMassage.ActionName);

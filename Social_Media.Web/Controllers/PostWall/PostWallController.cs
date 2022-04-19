@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Social_Media.Data.Models.Entities;
-using Social_Media.Data.Models.Entities_Identity;
+using Social_Media.Data.DataModels.Entities;
+using Social_Media.Data.DataModels.Entities_Identity;
 using Social_Media.EntityFramework;
 using System;
 using System.Collections.Generic;

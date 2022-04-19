@@ -1,0 +1,30 @@
+﻿@model User
+
+@{
+    Layout = "_Layout";
+}
+
+<div>
+    @foreach (User user in Model.UserFriends)
+    {
+       <div>
+           <h4>Name: @user.UserName</h4>
+           @if (user.PrivateChats.HasSamePrivateChat(Model.PrivateChats))
+           {
+              <form asp-action="PrivateChatingRoom" asp-controller="PrivateChat">
+               <input hidden="hidden" name="UserName" value="@Model.UserName">
+               <input hidden="hidden" name="FriendName" value="@user.UserName">
+               <button type="submit">Send massage</button>
+              </form>
+           }
+           else
+           {
+               <form asp-action="CreatePrivateChat" asp-controller="CrudPrivateChat">
+               <input hidden="hidden" name="model.UserName" value="@Model.UserName">
+               <input hidden="hidden" name="model.FriendName" value="@user.UserName">
+               <button type="submit">Starting private chat</button>
+              </form>
+           }
+        </div>
+    }
+</div>

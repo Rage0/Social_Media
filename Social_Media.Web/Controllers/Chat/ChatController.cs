@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Social_Media.Data.Models.Entities;
+using Social_Media.Data.DataModels.Entities;
 using Social_Media.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
 {
@@ -20,7 +21,7 @@ namespace Social_Media.Web.Controllers
 
         public IActionResult Chats()
         {
-            return View(_contextEF.GetAll<Chat>().AsEnumerable());
+            return View(_contextEF.GetAll<Chat>().AsEnumerable().Where(chat => chat.PostId == null));
         }
 
         public IActionResult CreateChat()
@@ -28,12 +29,12 @@ namespace Social_Media.Web.Controllers
             return View();
         }
 
-        public IActionResult ChatingRoom(Guid chatId)
+        public async Task<IActionResult> ChatingRoom(Guid chatId)
         {
-            Chat chat = _contextEF.GetAll<Chat>()
+            Chat chat = await _contextEF.GetAll<Chat>()
                 .Include(chat => chat.UserMassage)
                 .ThenInclude(massage => massage.Creater)
-                .FirstOrDefault(chat => chat.Id == chatId);
+                .FirstOrDefaultAsync(chat => chat.Id == chatId);
             if (chat != null)
             {
                 return View(chat);

@@ -1,0 +1,29 @@
+﻿@model PrivateChat
+
+@{
+    Layout = "_Layout";
+}
+@foreach (Massage massage in Model.Massages)
+{
+    <div>
+        <h4>@massage.Discription</h4>
+        <form asp-action="RemovetMassage" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-controller="CrudMassage">
+            <input hidden="hidden" name="massageId" value="@massage.Id"/>
+            <button type="submit">X</button>
+        </form>
+        <h5>@massage.Creater.UserName</h5>
+    </div>
+}
+<form asp-action="CreateMassageToPrivateChat" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-controller="CrudMassage">
+    <tr>
+        <td>
+            <input name="Massage.Discription" value=""/>
+        </td>
+    </tr>
+    
+    <input hidden="hidden" name="Massage.CreateAt" value="@DateTime.Now.Date"/>
+    <input hidden="hidden" name="Massage.UpdateAt" value="@DateTime.Now"/>
+    <input hidden="hidden" name="PrivateChatId" value="@Model.Id"/>
+    <input hidden="hidden" name="UserName" value="@Context.User.Identity.Name"/>
+    <button type="submit">Send</button>
+</form>

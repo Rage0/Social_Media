@@ -3,14 +3,14 @@ using Social_Media.Web.Controllers;
 using Moq;
 using Xunit;
 using Social_Media.EntityFramework;
-using Social_Media.Data.Models.Entities;
+using Social_Media.Data.DataModels.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using Social_Media.Data.Models.Entities.Interfaces;
+using Social_Media.Data.DataModels.Entities.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Social_Media.Data.Models.Entities_Identity;
+using Social_Media.Data.DataModels.Entities_Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.Security.Principal;
@@ -152,6 +152,7 @@ namespace Social_Media.Tests.ControllerTests
         {
             var moqUser = new Mock<IUserStore<User>>();
             var mgr = new Mock<UserManager<User>>(moqUser.Object, null, null, null, null, null, null, null, null);
+            mgr.Setup(repo => repo.FindByNameAsync(It.IsAny<string>())).Returns(Task.FromResult(new User { UserName = "Danial" }));
             return mgr;
         }
     }

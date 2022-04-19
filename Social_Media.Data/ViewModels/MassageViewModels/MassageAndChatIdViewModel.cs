@@ -1,7 +1,7 @@
-﻿using Social_Media.Data.Models.Entities;
+﻿using Social_Media.Data.DataModels.Entities;
 using System;
 
-namespace Social_Media.Web.Models.MassageViewModels
+namespace Social_Media.Data.ViewModels.MassageViewModels
 {
     public class MassageAndChatIdViewModel
     {

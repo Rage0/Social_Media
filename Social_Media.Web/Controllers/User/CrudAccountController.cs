@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Social_Media.Data.Models.Entities;
-using Social_Media.Data.Models.Entities_Identity;
+using Social_Media.Data.DataModels.Entities;
+using Social_Media.Data.DataModels.Entities_Identity;
+using Social_Media.Data.ViewModels.UserViewModels;
 using Social_Media.EntityFramework;
-using Social_Media.Web.Models.UserViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -45,7 +45,7 @@ namespace Social_Media.Web.Controllers
                     }
                     else
                     {
-                        RedirectToRoute(returnUrl);
+                        return Redirect(returnUrl);
                     }
                     
                 }
@@ -102,7 +102,7 @@ namespace Social_Media.Web.Controllers
                         }
                         else
                         {
-                            RedirectToRoute(returnUrl);
+                            return Redirect(returnUrl);
                         }
                     }
                     else
@@ -135,7 +135,7 @@ namespace Social_Media.Web.Controllers
                         }
                         else
                         {
-                            RedirectToRoute(returnUrl);
+                            return Redirect(returnUrl);
                         }
                     }
                     else

@@ -1,0 +1,27 @@
+﻿@model User
+
+@{
+    Layout = "_Layout";
+}
+
+
+<div class="border border-dark">
+    <h3>Name: @Model.UserName</h3>
+    <h4>Email: @Model.Email</h4>
+    <h4>Id: @Model.Id</h4>
+    <h3>Count User friends: @Model.UserFriends.Count <a asp-action="AllUsers" asp-controller="Account">+</a></h3>
+    <h3>Count Follofing user: @Model.FollowingUser.Count</h3>
+</div>
+<div class="border border-dark">
+    @foreach (Post post in Model.Posts)
+    {
+        <div>
+            <h3>@post.Title</h3>
+            <h3>@post.CreateAt</h3>
+        </div>
+    }
+</div>
+<div>
+    <a asp-action="MyFriends" asp-controller="Account" asp-route-userName="@Model.UserName">MyFriend</a>
+</div>
+

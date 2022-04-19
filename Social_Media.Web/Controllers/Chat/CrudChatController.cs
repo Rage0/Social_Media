@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Social_Media.Data.Models.Entities;
-using Social_Media.Data.Models.Entities.Interfaces;
-using Social_Media.Data.Models.Entities_Identity;
+using Microsoft.EntityFrameworkCore;
+using Social_Media.Data.DataModels.Entities;
+using Social_Media.Data.DataModels.Entities.Interfaces;
+using Social_Media.Data.DataModels.Entities_Identity;
 using Social_Media.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
 {
+    [Authorize]
     public class CrudChatController : Controller
     {
         private IRepositoryEntityFramework _contextEF;
@@ -22,7 +25,7 @@ namespace Social_Media.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateChat(Chat chat, string createrName, string returnUrl = "Chats/")
+        public async Task<IActionResult> CreateChat(Chat chat, string createrName, string returnUrl = "")
         {
             if (ModelState.IsValid)
             {
@@ -30,18 +33,24 @@ namespace Social_Media.Web.Controllers
 
                 chat.CreateAt = DateTime.Now;
                 chat.UpdateAt = DateTime.Now;
-                chat.Members = new List<User>();
                 chat.UserMassage = new List<Massage>();
                 if (user != null)
                 {
                     chat.CreaterId = user.Id;
                 }
-                
 
                 await _contextEF.CreateAsync(chat);
-                return RedirectToAction(returnUrl);
+
+                if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    return RedirectToAction("Chats", "Chat");
+                }
+                else
+                {
+                    return Redirect(returnUrl);
+                }
             }
-            return RedirectToAction("CreateChat", "Chat");
+            return RedirectToAction("Chats", "Chat");
         }
 
         [HttpPost]
@@ -49,7 +58,7 @@ namespace Social_Media.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Chat chatContext = _contextEF.GetAll<Chat>().FirstOrDefault(chatContext => chatContext.Id == chat.Id);
+                Chat chatContext = await _contextEF.GetAll<Chat>().FirstOrDefaultAsync(chatContext => chatContext.Id == chat.Id);
                 if (chatContext != null)
                 {
                     chatContext.UpdateAt = DateTime.Now;
@@ -63,7 +72,7 @@ namespace Social_Media.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToRoute(returnUrl);
+                        return Redirect(returnUrl);
                     }
                 }
 
@@ -76,7 +85,7 @@ namespace Social_Media.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Chat chat = _contextEF.GetAll<Chat>().FirstOrDefault(chat => chat.Id == chatId);
+                Chat chat = await _contextEF.GetAll<Chat>().FirstOrDefaultAsync(chat => chat.Id == chatId);
 
                 if (chat != null)
                 {
@@ -88,7 +97,7 @@ namespace Social_Media.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToRoute(returnUrl);
+                        return Redirect(returnUrl);
                     }
                 }
                 else

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Social_Media.Data.Models.Entities.Interfaces;
-using Social_Media.Data.Models.Entities_Identity;
 using System.ComponentModel.DataAnnotations.Schema;
+using Social_Media.Data.DataModels.Entities.Interfaces;
+using Social_Media.Data.DataModels.Entities_Identity;
 
-namespace Social_Media.Data.Models.Entities
+namespace Social_Media.Data.DataModels.Entities
 {
     public class Chat : IEntity
     {
@@ -15,13 +15,12 @@ namespace Social_Media.Data.Models.Entities
         public Guid Id { get; set; }
         public DateTime? CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string CreaterId { get; set; }
         [NotMapped]
         public User Creater { get; set; }
+        public Guid? PostId { get; set;}
+        public bool IsOnlyFriends { get; set; }
         [NotMapped]
-        public List<User> Members { get; set; }
-        public Guid PostId { get; set;}
         public Post Post { get; set; }
         public List<Massage> UserMassage { get; set; }
     }

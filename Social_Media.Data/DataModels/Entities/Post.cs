@@ -1,10 +1,9 @@
 ﻿using System;
-using Social_Media.Data.Models.Entities_Identity;
-using Social_Media.Data.Models.Entities.Interfaces;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Social_Media.Data.DataModels.Entities_Identity;
+using Social_Media.Data.DataModels.Entities.Interfaces;
 
-namespace Social_Media.Data.Models.Entities
+namespace Social_Media.Data.DataModels.Entities
 {
     public class Post : IEntity
     {
@@ -18,7 +17,6 @@ namespace Social_Media.Data.Models.Entities
         public DateTime? CreateAt { get; set; }
         public DateTime? UpdateAt { get; set; }
         public Chat UsingChat { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string CreaterId { get; set; }
         public User Creater { get; set; }
     }

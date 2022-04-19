@@ -1,0 +1,28 @@
+﻿@model UserAndAllUsersViewModel
+
+@{
+    Layout = "_Layout";
+}
+
+<div>
+    <h4 class="text-center">All Users</h4>
+    @if (Model.UsersFromContext.Count() > 0)
+    {
+        @foreach (User user in Model.UsersFromContext)
+        {
+           <div class="border">
+               <h5>@user.UserName</h5>
+               <form asp-action="AddFriendToUser" asp-controller="OtherActionAccount">
+                   <input hidden="hidden" name="UserName" value="@Context.User.Identity.Name">
+                   <input hidden="hidden" name="FriendName" value="@user.UserName">
+                   <button type="submit">Add</button>
+               </form>
+           </div>
+        }
+    }
+    else
+    {
+        <h5>Users is not exist</h5>
+    }
+
+</div>

@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Social_Media.Data.Models.Entities;
-using Social_Media.Data.Models.Entities.Interfaces;
-using Social_Media.Data.Models.Entities_Identity;
+using Social_Media.Data.DataModels.Entities;
+using Social_Media.Data.DataModels.Entities.Interfaces;
+using Social_Media.Data.DataModels.Entities_Identity;
 using Social_Media.EntityFramework;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
 {
+    [Authorize]
     public class CrudPostWallController : Controller
     {
         private IRepositoryEntityFramework _contextEF;
@@ -61,7 +63,7 @@ namespace Social_Media.Web.Controllers
                 }
                 else
                 {
-                    return RedirectToRoute(returnUrl);
+                    return Redirect(returnUrl);
                 }
             }
             return RedirectToAction("CreatePost", "PostWall");
@@ -72,7 +74,7 @@ namespace Social_Media.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Post post = _contextEF.GetAll<Post>().FirstOrDefault(post => post.Id == postId);
+                Post post = await _contextEF.GetAll<Post>().FirstOrDefaultAsync(post => post.Id == postId);
 
                 if (post != null)
                 {
@@ -84,7 +86,7 @@ namespace Social_Media.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToRoute(returnUrl);
+                        return Redirect(returnUrl);
                     }
                 }
                 else
@@ -102,7 +104,7 @@ namespace Social_Media.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Post postContext = _contextEF.GetAll<Post>().FirstOrDefault(postContext => postContext.Id == post.Id);
+                Post postContext = await _contextEF.GetAll<Post>().FirstOrDefaultAsync(postContext => postContext.Id == post.Id);
                 if (postContext != null)
                 {
                     postContext.UpdateAt = DateTime.Now;
@@ -116,7 +118,7 @@ namespace Social_Media.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToRoute(returnUrl);
+                        return Redirect(returnUrl);
                     }
                 }
             }

@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Social_Media.Data.Models.Entities;
-using Social_Media.Data.Models.Entities.Interfaces;
-using Social_Media.Data.Models.Entities_Identity;
+using Microsoft.EntityFrameworkCore;
+using Social_Media.Data.DataModels.Entities;
+using Social_Media.Data.DataModels.Entities.Interfaces;
+using Social_Media.Data.DataModels.Entities_Identity;
+using Social_Media.Data.ViewModels.MassageViewModels;
 using Social_Media.EntityFramework;
-using Social_Media.Web.Models.MassageViewModels;
+using Social_Media.Web.Model.UserModel;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
 {
+    [Authorize]
     public class CrudMassageController : Controller
     {
         private IRepositoryEntityFramework _contextEF;
@@ -22,11 +26,11 @@ namespace Social_Media.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMassage(MassageAndChatIdViewModel viewModel, string createrName, string returnUrl = "")
+        public async Task<IActionResult> CreateMassageToChat(MassageAndChatIdViewModel viewModel, string createrName, string returnUrl = "")
         {
             if (ModelState.IsValid)
             {
-                Chat chat = _contextEF.GetAll<Chat>().FirstOrDefault(chat => chat.Id == viewModel.ChatId);
+                Chat chat = await _contextEF.GetAll<Chat>().FirstOrDefaultAsync(chat => chat.Id == viewModel.ChatId);
                 User user = await _userManager.FindByNameAsync(createrName);
                 if (chat != null)
                 {
@@ -46,19 +50,68 @@ namespace Social_Media.Web.Controllers
                 }
                 else
                 {
-                    return RedirectToRoute(returnUrl);
+                    return Redirect(returnUrl);
                 }
             }
             ViewBag.Exeption = "Error";
             return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
         }
-        
+
+        [HttpPost]
+        public async Task<IActionResult> CreateMassageToPrivateChat(MassageAndPrivateChatIdViewModel viewModel, string returnUrl = "")
+        {
+            if (ModelState.IsValid)
+            {
+                PrivateChat privateChat = await _contextEF.GetAll<PrivateChat>()
+                    .FirstOrDefaultAsync(chat => chat.Id == viewModel.PrivateChatId);
+
+                User user = await _userManager.FindByNameAsync(viewModel.UserName);
+                if (privateChat != null)
+                {
+                    viewModel.Massage.PrivateChat = privateChat;
+                }
+
+                if (user != null)
+                {
+                    viewModel.Massage.CreaterId = user.Id;
+                }
+
+                await _contextEF.CreateAsync(viewModel.Massage);
+
+                if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
+                {
+                    return RedirectToAction("PrivateChatingRoom", "PrivateChat", new 
+                    { 
+                        model = new FriendNameAndUserName
+                        {
+                            UserName = viewModel.UserName,
+                            FriendName = viewModel.FriendName,
+                        }
+                    });
+                }
+                else
+                {
+                    return Redirect(returnUrl);
+                }
+            }
+            ViewBag.Exeption = "Error";
+            return RedirectToAction("PrivateChatingRoom", "PrivateChat", new
+            {
+                model = new FriendNameAndUserName
+                {
+                    UserName = viewModel.UserName,
+                    FriendName = viewModel.FriendName,
+                }
+            });
+        }
+
         [HttpPost]
         public async Task<IActionResult> UpdateMassage(MassageAndChatIdViewModel viewModel, string returnUrl = "")
         {
             if (ModelState.IsValid)
             {
-                Massage massageContext = _contextEF.GetAll<Massage>().FirstOrDefault(massageContext => massageContext.Id == viewModel.Massage.Id);
+                Massage massageContext = await _contextEF.GetAll<Massage>()
+                    .FirstOrDefaultAsync(massageContext => massageContext.Id == viewModel.Massage.Id);
                 if (massageContext != null)
                 {
                     massageContext.UpdateAt = DateTime.Now;
@@ -71,7 +124,7 @@ namespace Social_Media.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToRoute(returnUrl);
+                        return Redirect(returnUrl);
                     }
                 }
                 else
@@ -88,7 +141,7 @@ namespace Social_Media.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                Massage massage = _contextEF.GetAll<Massage>().FirstOrDefault(massage => massage.Id == massageId);
+                Massage massage = await _contextEF.GetAll<Massage>().FirstOrDefaultAsync(massage => massage.Id == massageId);
                 if (massage != null)
                 {
                     await _contextEF.RemovetAsync(massage);
@@ -99,7 +152,7 @@ namespace Social_Media.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToRoute(returnUrl);
+                        return Redirect(returnUrl);
                     }
                 }
                 else
