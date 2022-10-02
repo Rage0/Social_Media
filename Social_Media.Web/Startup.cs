@@ -68,9 +68,40 @@ namespace Social_Media.Web
 
             app.UseStaticFiles();
 
+            AppIdentityContext.CreateBaseAccountAsync(app.ApplicationServices);
+
             app.UseEndpoints(endpoints =>
             {
-                    endpoints.MapControllerRoute(
+                    endpoints.MapControllerRoute
+                    (
+                    name: "PrivateChatingRoom",
+                    pattern: "ChatingRoom",
+                    defaults: new { Controller = "PrivateChat", Action = "PrivateChatingRoom" }
+                    );
+
+                    endpoints.MapControllerRoute
+                    (
+                    name: "PrivateChat",
+                    pattern: "{UserName}/Chats",
+                    defaults: new { Controller = "PrivateChat", Action = "MyPrivateChat" }
+                    );
+
+                    endpoints.MapControllerRoute
+                    (
+                    name: "Chats",
+                    pattern: "Chats",
+                    defaults: new { Controller = "Chat", Action = "Chats" }
+                    );
+
+                    endpoints.MapControllerRoute
+                    (
+                    name: "ChatingRoom",
+                    pattern: "Chat/{Action}",
+                    defaults: new { Controller = "Chat", Action = "ChatingRoom" }
+                    );
+
+                    endpoints.MapControllerRoute
+                    (
                     name: "default",
                     pattern: "{controller=PostWall}/{action=Posts}/{id?}"
                     );

@@ -13,11 +13,15 @@ namespace Social_Media.EntityFramework
     {
         private ApplicationContext _context;
         private UserManager<User> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
 
-        public UserContextEntityFramework(ApplicationContext applicationContext, UserManager<User> userManager)
+        public UserContextEntityFramework(ApplicationContext applicationContext,
+            UserManager<User> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _context = applicationContext;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public IQueryable<User> GetAllUsers()
@@ -36,6 +40,7 @@ namespace Social_Media.EntityFramework
             IdentityResult result = await _userManager.CreateAsync(user, viewModel.Password);
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "User");
                 User userFromManager = await _userManager.FindByNameAsync(user.UserName);
                 if (userFromManager != null)
                 {
@@ -47,11 +52,23 @@ namespace Social_Media.EntityFramework
             return IdentityResult.Failed();
         }
 
-        public async Task<IdentityResult> UpdateUserAsync(User userEdited)
+        public async Task UpdateUserAsync(User userEdited)
         {
             _context.Users.Update(userEdited);
             await _context.SaveChangesAsync();
-            return IdentityResult.Success;
+        }
+
+        public async Task<IdentityResult> ResetPasswordAsync(User user, string code, string password)
+        {
+            var result = await _userManager.ResetPasswordAsync(user, code, password);
+            if (result.Succeeded)
+            {
+                user = await _userManager.FindByNameAsync(user.UserName);
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                return result;
+            }
+            return IdentityResult.Failed();
         }
 
         public async Task<IdentityResult> RemovetUserAsync(User user)

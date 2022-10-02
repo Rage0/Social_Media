@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Post>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+@foreach (Post post in Model)
+{
+    <h3>Post name: @post.Title</h3>
+    <h3>Creater: @post.Creater.UserName</h3>
+}

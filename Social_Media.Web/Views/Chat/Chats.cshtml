@@ -7,15 +7,21 @@
 
 @foreach (Chat chat in Model ?? new Chat[] { })
 {
-    <div>
-        <h5>@chat.Name</h5>
-        <h5>@chat.CreateAt</h5>
-        <h5>@chat.UpdateAt</h5>
-        <a asp-action="ChatingRoom" asp-controller="Chat" asp-route-chatId="@chat.Id">Enter the chat</a>
-        <form asp-action="RemovetChat" asp-controller="CrudChat">
-            <input hidden="hidden" name="chatId" value="@chat.Id">
-            <button type="submit">Remove</button>
-        </form>
+    <div class="card m-2">
+        <div class="card-header">
+            <h5>@chat.Name</h5>
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Created: @chat.CreateAt</h5>
+
+            <p class="card-text">Update: @chat.UpdateAt</p>
+
+            <a asp-action="ChatingRoom" asp-controller="Chat" asp-route-chatId="@chat.Id">Enter the chat</a>
+            <form asp-action="RemovetChat" asp-controller="CrudChat">
+                <input hidden="hidden" name="chatId" value="@chat.Id">
+                <button type="submit">Remove</button>
+            </form>
+        </div>
     </div>
 
 }

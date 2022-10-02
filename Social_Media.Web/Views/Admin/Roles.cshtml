@@ -1,0 +1,11 @@
+﻿@model IEnumerable<IdentityRole>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+@foreach (IdentityRole role in Model)
+{
+    <h3>Role name: @role.Name</h3>
+    <h3>Id: @role.Id</h3>
+}

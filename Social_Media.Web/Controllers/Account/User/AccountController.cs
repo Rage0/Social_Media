@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
 {
+    [Authorize]
     public class AccountController : Controller
     {
         private UserManager<User> _userManager;
         private SignInManager<User> _signInManager;
         private UserContextEntityFramework _userContextEF;
-
         public AccountController(UserManager<User> userManager,
             SignInManager<User> signInManager,
             UserContextEntityFramework userContextEF)
@@ -32,34 +32,41 @@ namespace Social_Media.Web.Controllers
             return View(new RegisterViewModel());
         }
 
-        public IActionResult EditUser(string userId)
+        public async Task<IActionResult> EditUser(string userId)
         {
-            return View();
+            User user = await _userManager.FindByIdAsync(userId);
+            if (user != null)
+            {
+                return View(new EditUserViewModel
+                {
+                    Name = user.UserName,
+                    Id = user.Id,
+                });
+            }
+            else
+            {
+                return RedirectToAction("Setting", "Account", new {userName = HttpContext.User.Identity.Name});
+            }
+            
+        }
+
+        public async Task<IActionResult> Setting(string userName)
+        {
+            User user = await _userManager.FindByNameAsync(userName);
+            if (user != null)
+            {
+                return View(user);
+            }
+            else
+            {
+                return RedirectToAction("MyProfile", "Account");
+            }
         }
 
         [AllowAnonymous]
         public IActionResult Login(string returnUrl = "")
         {
             return View(new LoginViewModel { ReturnUrl = returnUrl });
-        }
-
-        public async Task<IActionResult> AllUsersAsync()
-        {
-            User user = await _userContextEF
-                .GetAllUsers()
-                .Include(userInclude => userInclude.UserFriends)
-                .FirstOrDefaultAsync(user => user.UserName == HttpContext.User.Identity.Name);
-
-            return View(new UserAndAllUsersViewModel
-            {
-                UsersFromContext = _userContextEF.GetAllUsers()
-                .Where(userContext =>
-                       userContext.UserName != user.UserName &&
-                       !user.UserFriends.Contains(userContext))
-                .ToList(),
-
-                User = user
-            });
         }
 
         [HttpPost]
@@ -72,6 +79,7 @@ namespace Social_Media.Web.Controllers
                 User user = await _userManager.FindByNameAsync(model.Name);
                 if (user != null)
                 {
+
                     await _signInManager.SignOutAsync();
                     Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                     if (result.Succeeded)
@@ -93,17 +101,16 @@ namespace Social_Media.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("Email", "Email not registred");
+                    ModelState.AddModelError("Name", "Name is not exist");
                     return View(model);
                 }
             }
             return View(model);
         }
-
+        
         public async Task<IActionResult> MyProfile(string userName)
         {
             User user = await _userContextEF.GetAllUsers()
-                .Include(user => user.Posts)
                 .Include(user => user.UserFriends)
                 .Include(user => user.FollowingUser)
                 .FirstOrDefaultAsync(user => user.UserName == userName);
@@ -113,21 +120,6 @@ namespace Social_Media.Web.Controllers
                 return View(user);
             }
             return RedirectToAction("Login");
-        }
-
-        public async Task<IActionResult> MyFriends(string userName)
-        {
-            User user = await _userContextEF.GetAllUsers()
-                .Include(user => user.UserFriends)
-                    .ThenInclude(userAnother => userAnother.PrivateChats)
-                .Include(user => user.PrivateChats)
-                .FirstOrDefaultAsync(user => user.UserName == userName);
-
-            if (user != null)
-            {
-                return View(user);
-            }
-            return RedirectToAction("Posts", "PostWall");
         }
 
         public async Task<IActionResult> Logout()

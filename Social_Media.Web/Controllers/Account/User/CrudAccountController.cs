@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Social_Media.Data.DataModels.Entities;
 using Social_Media.Data.DataModels.Entities_Identity;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
 {
+    [Authorize]
     public class CrudAccountController : Controller
     {
         private UserManager<User> _userManager;
@@ -22,9 +24,11 @@ namespace Social_Media.Web.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _contextUserEF = entityFramework;
+
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> CreateUser(RegisterViewModel viewModel, string returnUrl = "")
         {
             if (ModelState.IsValid)
@@ -34,6 +38,7 @@ namespace Social_Media.Web.Controllers
                     Email = viewModel.Email,
                 };
 
+                
                 IdentityResult result = await _contextUserEF.CreateUserAsync(viewModel);
                 if (result.Succeeded)
                 {
@@ -69,36 +74,16 @@ namespace Social_Media.Web.Controllers
                 if (userContext != null)
                 {
                     userContext.UserName = viewModel.Name;
-                    userContext.PhotoProfileRoute = viewModel.PhotoProfileRoute;
 
-                    if (viewModel.DeletePosts != null)
-                    {
-                        await Task.Run(() => 
-                        {
-                            foreach (Post post in viewModel.DeletePosts)
-                            {
-                                userContext.Posts.Remove(post);
-                            }
-                        });
-                        
-                    }
-                    else if (viewModel.UnfollowUsers != null)
-                    {
-                        await Task.Run(() =>
-                        {
-                            foreach (User user in viewModel.UnfollowUsers)
-                            {
-                                userContext.UserFriends.Remove(user);
-                            }
-                        });
-                    }
 
-                    IdentityResult result = await _contextUserEF.UpdateUserAsync(userContext);
+                    IdentityResult result = await _userManager.UpdateAsync(userContext);
                     if (result.Succeeded)
                     {
+                        await _contextUserEF.UpdateUserAsync(userContext);
+
                         if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
                         {
-                            return RedirectToAction("Profile", "Account", new {userId = viewModel.Id});
+                            return RedirectToAction("MyProfile", "Account", new {userId = viewModel.Id});
                         }
                         else
                         {
@@ -114,7 +99,7 @@ namespace Social_Media.Web.Controllers
                     }
                 }
             }
-            return RedirectToAction("EditUset", "Account");
+            return RedirectToAction("EditUser", "Account");
         }
 
         [HttpPost]

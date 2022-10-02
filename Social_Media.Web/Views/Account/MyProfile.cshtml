@@ -1,27 +1,50 @@
 ﻿@model User
 
 @{
-    Layout = "_Layout";
+    Layout = "_ProfileLayout";
+    ViewBag.Title = "My Profile";
 }
 
-
-<div class="border border-dark">
-    <h3>Name: @Model.UserName</h3>
-    <h4>Email: @Model.Email</h4>
-    <h4>Id: @Model.Id</h4>
-    <h3>Count User friends: @Model.UserFriends.Count <a asp-action="AllUsers" asp-controller="Account">+</a></h3>
-    <h3>Count Follofing user: @Model.FollowingUser.Count</h3>
-</div>
-<div class="border border-dark">
-    @foreach (Post post in Model.Posts)
-    {
-        <div>
-            <h3>@post.Title</h3>
-            <h3>@post.CreateAt</h3>
+<div class="border-0 border-bottom">
+    <div class="d-flex mx-4">
+        <div class="m-3">
+            <div class="border border-dark" style="height: 250px; width: 250px"></div>
+            <div class="d-inline-block">
+                <h4>Count User friends: @Model.UserFriends.Count <a asp-action="AllUsers" asp-controller="OtherAccount">+</a></h4>
+                <h4>Count Follofing user: @Model.FollowingUser.Count</h4>
+            </div>
         </div>
-    }
+        
+        <div class="m-3 px-md-5">
+            <div class="border-0 border-bottom border-dark mt-1">
+                <h3 class="fs-2">Name: @Model.UserName</h3>
+            </div>
+            <div class="border-0 border-bottom border-dark  mt-1">
+                <h4 class="fs-2 fst-normal">Email: @Model.Email</h4>
+            </div>
+            <div class="border-0 border-bottom border-dark  mt-1">
+                <h4 class="fs-2 fst-normal">Id: @Model.Id</h4>
+            </div>
+            @if (Context.User.IsInRole("User"))
+            {
+                <div class="border-0 border-bottom border-dark  mt-1">
+                    <h3 class="fs-2 fst-normal">Role: User</h3>
+                </div>
+            }
+            @if (Context.User.IsInRole("Admin"))
+            {
+                <div class="border-0 border-bottom border-dark  mt-1">
+                    <h3 class="fs-2 fst-normal">Role: Admin</h3>
+                </div>   
+            }
+        </div>
+    </div>
+
 </div>
 <div>
-    <a asp-action="MyFriends" asp-controller="Account" asp-route-userName="@Model.UserName">MyFriend</a>
+    <a asp-action="MyFriends" asp-controller="OtherAccount" asp-route-userName="@Model.UserName">My friends</a>
+    <a asp-action="PostsUser" asp-controller="PostWall" asp-route-userName="@Model.UserName">My posts</a>
+    <a asp-action="Setting" asp-controller="Account" asp-route-userName="@Model.UserName">Setting</a>
+    <a asp-action="CreatePost" asp-controller="PostWall">Create post</a>
 </div>
 

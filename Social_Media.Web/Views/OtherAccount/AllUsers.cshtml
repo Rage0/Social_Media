@@ -11,9 +11,9 @@
         @foreach (User user in Model.UsersFromContext)
         {
            <div class="border">
-               <h5>@user.UserName</h5>
+               <a asp-action="OtherProfile" asp-controller="OtherAccount" asp-route-userName="@user.UserName"><h5>@user.UserName</h5></a>
                <form asp-action="AddFriendToUser" asp-controller="OtherActionAccount">
-                   <input hidden="hidden" name="UserName" value="@Context.User.Identity.Name">
+                   <input hidden="hidden" name="UserName" value="@Model.User.UserName">
                    <input hidden="hidden" name="FriendName" value="@user.UserName">
                    <button type="submit">Add</button>
                </form>

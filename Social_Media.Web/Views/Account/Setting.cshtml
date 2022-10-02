@@ -1,0 +1,16 @@
+﻿@model User
+
+<div class="text-center d-inline">
+    <div class="p-1">
+        <form asp-action="RemovetUser" asp-controller="CrudAccount">
+            <input hidden="hidden" name="userName" value="@Context.User.Identity.Name">
+            <button type="submit">Remove account</button>
+        </form>
+    </div>
+    <div class="p-1">
+        <a asp-action="EditUser" asp-controller="Account" asp-route-userId="@Model.Id">Edit profile</a>
+    </div>
+    <div class="p-1">
+        <a asp-action="Logout" asp-controller="Account">Log out</a>
+    </div>
+</div>

@@ -33,6 +33,9 @@ namespace Social_Media.Web.Controllers
                 post.Liked = 0;
                 User user;
 
+                post.CreateAt = DateTime.Now;
+                post.UpdateAt = DateTime.Now;
+
                 Chat chatForPost = new Chat()
                 {
                     Name = post.Title,

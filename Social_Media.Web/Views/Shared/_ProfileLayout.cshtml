@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
@@ -12,18 +13,9 @@
         <div class="item-block-horizontal ">
             <div class="container-fluid">
                 <div class="row mx-3 justify-content-md-start p-2">
-                        @if (Context.User.Identity.Name != null)
-                        {
-                            <div class="col-1 p-1">
-                                <a class="btn btn-outline-light btn-sm" asp-action="MyProfile" asp-controller="Account" asp-route-userName="@Context.User.Identity.Name">@Context.User.Identity.Name</a>
-                            </div>
-                        }
-                        else
-                        {   
-                            <div class="col-1 p-1">
-                                <a class="btn btn-outline-light btn-sm" asp-action="MyProfile" asp-controller="Account" asp-route-userName="@Context.User.Identity.Name">My Profile</a>
-                            </div>
-                        }
+                    <div class="col-1 p-1">
+                        <a class="btn btn-outline-light btn-sm" asp-action="MyProfile" asp-controller="Account" asp-route-userName="@Context.User.Identity.Name">@Context.User.Identity.Name</a>
+                    </div>        
                     <div class="col-1 p-1" style="width: auto">
                         <a class="btn btn-outline-light btn-sm" asp-action="MyPrivateChat" asp-controller="PrivateChat" asp-route-userName="@Context.User.Identity.Name">Massages</a>
                     </div>
@@ -33,13 +25,6 @@
                     <div class="col-1 p-1" style="width: auto">
                         <a class="btn btn-outline-light btn-sm" asp-action="Posts" asp-controller="PostWall">Posts</a>        
                     </div>
-                    @if (!Context.User.Identity.IsAuthenticated)
-                    {
-                        <div class="col-1 offset-xl-8 p-1">
-                            <a class="btn btn-outline-light btn-sm" asp-action="Login" asp-controller="Account">Log in</a>
-                            <a class="btn btn-outline-light btn-sm" asp-action="Register" asp-controller="Account">Register</a> 
-                        </div>
-                    }
                     @if (Context.User.IsInRole("Admin"))
                     {
                         <div class="col-1 p-1">

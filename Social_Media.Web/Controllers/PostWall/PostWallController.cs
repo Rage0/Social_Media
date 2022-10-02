@@ -15,9 +15,11 @@ namespace Social_Media.Web.Controllers
     public class PostWallController : Controller
     {
         private IRepositoryEntityFramework _contextEF;
-        public PostWallController(IRepositoryEntityFramework entityFramework)
+        private UserContextEntityFramework _userContextEF;
+        public PostWallController(IRepositoryEntityFramework entityFramework, UserContextEntityFramework userContext)
         {
             _contextEF = entityFramework;
+            _userContextEF = userContext;
         }
 
         public IActionResult Posts()
@@ -27,12 +29,26 @@ namespace Social_Media.Web.Controllers
                 .Include(post => post.Creater)
                 .AsEnumerable());
         }
-        
+
+        [Authorize]
         public IActionResult CreatePost()
         {
-            return View();
+            return View(new Post());
         }
 
+        public async Task<IActionResult> PostsUser(string userName)
+        {
+            User user = await _userContextEF.GetAllUsers()
+                .Include(user => user.Posts)
+                .FirstOrDefaultAsync(user => user.UserName == userName);
+            if (user != null)
+            {
+                return View(user.Posts);
+            }
+            return RedirectToAction("Posts", "PostWall");
+        }
+
+        [Authorize]
         public async Task<IActionResult> EditPost(Guid postId)
         {
             Post post = await _contextEF.GetAll<Post>().FirstOrDefaultAsync(post => post.Id == postId);

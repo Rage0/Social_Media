@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Chat>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+@foreach (Chat chat in Model)
+{
+    if (chat.Name != null)
+    {
+        <h3>Post name: @chat.Name</h3>
+    }
+    else
+    {
+        <h3>Post name: Nothing</h3>
+    }
+
+    <h3>Creater: @chat.Creater.UserName</h3>
+}
+

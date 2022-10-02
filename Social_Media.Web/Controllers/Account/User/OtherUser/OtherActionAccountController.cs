@@ -1,23 +1,21 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Social_Media.Data.DataModels.Entities_Identity;
 using Social_Media.EntityFramework;
 using Social_Media.Web.Model.UserModel;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Social_Media.Web.Controllers
 {
-    [Authorize]
     public class OtherActionAccountController : Controller
     {
         private UserContextEntityFramework _userContextEF;
-        public OtherActionAccountController(UserContextEntityFramework userContextEF)
+        private UserManager<User> _userManager;
+        public OtherActionAccountController(UserContextEntityFramework userContextEF, UserManager<User> userManager)
         {
             _userContextEF = userContextEF;
+            _userManager = userManager;
         }
 
         [HttpPost]
@@ -33,7 +31,6 @@ namespace Social_Media.Web.Controllers
             if (userFriend != null && user != null)
             {
                 user.UserFriends.Add(userFriend);
-
                 await _userContextEF.UpdateUserAsync(user);
 
                 if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
@@ -47,5 +44,5 @@ namespace Social_Media.Web.Controllers
             }
             return RedirectToAction("MyProfile", "Account", new { userName = model.UserName });
         }
-    }   
+    }
 }

@@ -1,0 +1,11 @@
+﻿@model IEnumerable<User>
+
+@{
+    Layout = "_AdminLayout";
+}
+
+@foreach (User user in Model)
+{
+    <h3>User name: @user.UserName</h3>
+    <h4>Email: @user.Email</h4>
+}

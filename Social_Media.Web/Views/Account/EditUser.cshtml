@@ -1,0 +1,14 @@
+﻿@model EditUserViewModel
+
+<div>
+    <form asp-action="UpdateUser" asp-controller="CrudAccount">
+        <td>
+            <tr>
+                <label asp-for="Name"></label>
+                <input asp-for="Name" value="@Context.User.Identity.Name"/>
+            </tr>
+        </td>
+        <input hidden="hidden" asp-for="Id" value="@Model.Id" />
+        <button type="submit">Edit</button>
+    </form>
+</div>

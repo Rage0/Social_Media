@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/css/bundle.min.css"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <div class="content">
+        <div class="item-block-horizontal">
+            <a asp-action="MyProfile" asp-controller="Account" asp-route-userName="@Context.User.Identity.Name">My Profile</a>
+            <a asp-action="Posts" asp-controller="Admin">Posts</a>
+            <a asp-action="Chats" asp-controller="Admin">Chats</a>
+            <a asp-action="Users" asp-controller="Admin">Users</a>
+            <a asp-action="Roles" asp-controller="Admin">Roles</a>
+        </div>
+        <div class="content-include" style="overflow:auto">
+            @RenderBody()
+        </div>
+    </div>
+</body>
+</html>

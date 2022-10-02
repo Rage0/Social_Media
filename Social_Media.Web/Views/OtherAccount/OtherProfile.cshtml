@@ -1,0 +1,11 @@
+﻿@model User 
+
+@{
+    Layout = "_ProfileLayout";
+}
+
+<div>
+    <h3>Name: @Model.UserName</h3>
+    <h4>Email: @Model.Email</h4>
+    <h4>Friends: @Model.UserFriends.Count</h4>
+</div>
