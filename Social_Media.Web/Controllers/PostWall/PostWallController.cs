@@ -36,24 +36,13 @@ namespace Social_Media.Web.Controllers
             return View(new Post());
         }
 
-        public async Task<IActionResult> PostsUser(string userName)
-        {
-            User user = await _userContextEF.GetAllUsers()
-                .Include(user => user.Posts)
-                .FirstOrDefaultAsync(user => user.UserName == userName);
-            if (user != null)
-            {
-                return View(user.Posts);
-            }
-            return RedirectToAction("Posts", "PostWall");
-        }
-
         [Authorize]
-        public async Task<IActionResult> EditPost(Guid postId)
+        public async Task<IActionResult> EditPost(Guid postId, string returnUrl = "")
         {
             Post post = await _contextEF.GetAll<Post>().FirstOrDefaultAsync(post => post.Id == postId);
             if (post != null)
             {
+                ViewBag.ReturnUrl = returnUrl;
                 return View(post);
             }
             else

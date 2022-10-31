@@ -1,0 +1,19 @@
+﻿@model Chat
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Create chat";
+}
+
+<div class="mx-auto m-3 text-center bg-light border" style="width: 300px; height: 300px">
+    <div>
+        <h3>Create Chat</h3>
+    </div>
+    <div class="align-content-center">
+        <form asp-action="CreateChat" asp-controller="CrudChat">
+            <input name="Name" value="New chat"/>
+            <input hidden="hidden" name="createrName" value="@Context.User.Identity.Name" />
+            <button class="btn btn-secondary p-sm-1" type="submit">Create Chat</button>
+        </form>
+    </div>
+</div>

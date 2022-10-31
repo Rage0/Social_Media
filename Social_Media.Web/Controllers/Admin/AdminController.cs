@@ -6,6 +6,7 @@ using Social_Media.Data.DataModels.Entities;
 using Social_Media.Data.DataModels.Entities_Identity;
 using Social_Media.Data.ViewModels.UserViewModels;
 using Social_Media.EntityFramework;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,7 +33,10 @@ namespace Social_Media.Web.Controllers
 
         public IActionResult Posts()
         {
-            return View(_contextEF.GetAll<Post>().Include(posts => posts.Creater).AsEnumerable());
+            return View(_contextEF.GetAll<Post>()
+                .Include(posts => posts.Creater)
+                .Include(posts => posts.UsingChat)
+                .AsEnumerable());
         }
 
         public IActionResult Chats()
@@ -45,7 +49,12 @@ namespace Social_Media.Web.Controllers
 
         public IActionResult Users()
         {
-            return View(_userManager.Users.AsEnumerable());
+            return View(_userContextEF.GetAllUsers()
+                .Include(user => user.UserFriends)
+                .Include(user => user.FollowingUser)
+                .Include(user => user.Posts)
+                .Include(user => user.OwnerChats)
+                .AsEnumerable());
         }
 
         public IActionResult Roles()
@@ -53,19 +62,21 @@ namespace Social_Media.Web.Controllers
             return View(_roleManager.Roles.AsEnumerable());
         }
 
-        public async Task<IActionResult> UserMassages(string name)
+        public async Task<IActionResult> ChatMassages(Guid chatId)
         {
-            User user = await _userContextEF
-                .GetAllUsers()
-                .Include(user => user.Massages)
-                .FirstOrDefaultAsync(user => user.UserName == name);
+            Chat chat = await _contextEF
+                    .GetAll<Chat>()
+                    .Include(chat => chat.UserMassage)
+                    .Include(chat => chat.UserMassage)
+                        .ThenInclude(massage => massage.Creater)
+                    .FirstOrDefaultAsync(chat => chat.Id == chatId);
 
-            if (user != null)
+            if (chat != null)
             {
-                return View(user.Massages);
+                return View(chat);
             }
 
-            return RedirectToAction("Posts");
+            return RedirectToAction("Posts", "Admin");
         }
     }
 }

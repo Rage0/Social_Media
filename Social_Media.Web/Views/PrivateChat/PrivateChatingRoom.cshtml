@@ -1,29 +1,67 @@
 ﻿@model PrivateChat
 
 @{
-    Layout = "_Layout";
+    Layout = "_ChatingRoomLayout";
+    ViewBag.Title = "ChatingRoom";
 }
-@foreach (Massage massage in Model.Massages)
-{
-    <div>
-        <h4>@massage.Discription</h4>
-        <form asp-action="RemovetMassage" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-controller="CrudMassage">
-            <input hidden="hidden" name="massageId" value="@massage.Id"/>
-            <button type="submit">X</button>
+<div class="element-last" style="overflow:auto; height: 80vh;">
+    @foreach (Massage massage in Model.Massages.OrderBy(massage => massage.CreateAt))
+    {
+        @if (massage.Creater.Id == ViewBag.IdUser)
+        {
+            <div class="m-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between">
+                        <div>
+                            <h5>@massage.Creater.UserName</h5>
+                        </div>
+                        <div>
+                            <form asp-action="RemovetMassage" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-controller="CrudMassage">
+                                <input hidden="hidden" name="massageId" value="@massage.Id" />
+                                <button class="btn btn-secondary p-1"  type="submit">X</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h4>@massage.Discription</h4>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <h7>@massage.CreateAt</h7>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="m-3">
+                <div class="card text-end">
+                    <div class="card-header">
+                        <div>
+                            <h5>@massage.Creater.UserName</h5>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h4>@massage.Discription</h4>
+                    </div>
+                </div>
+                <div class="text-start">
+                    <h7>@massage.CreateAt</h7>
+                </div>
+            </div>
+        }
+    }
+</div>
+<div class="bg-light border text-center" style="height: 5em">
+    <div class="m-3 align-self-center">
+        <form asp-action="CreateMassageToPrivateChat" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-controller="CrudMassage">
+            <input hidden="hidden" name="Massage.CreateAt" value="@DateTime.Now"/>
+            <input hidden="hidden" name="Massage.UpdateAt" value="@DateTime.Now"/>
+            <input hidden="hidden" name="PrivateChatId" value="@Model.Id"/>
+            <input hidden="hidden" name="UserName" value="@Context.User.Identity.Name"/>
+            <div class="input-group mb-3">
+                <textarea style="height: 20px; overflow:auto; resize:none" name="Massage.Discription" class="form-control" value="" aria-describedby="button-addon2"></textarea>
+                <button class="btn btn-secondary" type="submit" id="button-addon2">Send</button>
+            </div>
         </form>
-        <h5>@massage.Creater.UserName</h5>
     </div>
-}
-<form asp-action="CreateMassageToPrivateChat" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-controller="CrudMassage">
-    <tr>
-        <td>
-            <input name="Massage.Discription" value=""/>
-        </td>
-    </tr>
-    
-    <input hidden="hidden" name="Massage.CreateAt" value="@DateTime.Now.Date"/>
-    <input hidden="hidden" name="Massage.UpdateAt" value="@DateTime.Now"/>
-    <input hidden="hidden" name="PrivateChatId" value="@Model.Id"/>
-    <input hidden="hidden" name="UserName" value="@Context.User.Identity.Name"/>
-    <button type="submit">Send</button>
-</form>
+</div>

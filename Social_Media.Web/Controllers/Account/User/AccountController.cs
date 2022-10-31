@@ -111,7 +111,9 @@ namespace Social_Media.Web.Controllers
         public async Task<IActionResult> MyProfile(string userName)
         {
             User user = await _userContextEF.GetAllUsers()
+                .Include(user => user.Posts)
                 .Include(user => user.UserFriends)
+                    .ThenInclude(userAnother => userAnother.UserFriends)
                 .Include(user => user.FollowingUser)
                 .FirstOrDefaultAsync(user => user.UserName == userName);
 

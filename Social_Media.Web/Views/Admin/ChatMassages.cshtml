@@ -1,0 +1,37 @@
+﻿@model Chat
+
+@{
+    Layout = "_AdminChatingRoomLayout";
+    ViewBag.Title = "Check massages of Chat";
+}
+
+@foreach (Massage massage in Model.UserMassage.OrderBy(massage => massage.CreateAt))
+{
+    <div class="my-3">
+        <div>
+            <form asp-action="RemovetMassage" asp-controller="CrudMassage" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+                <input hidden="hidden" name="massageId" value="@massage.Id">
+                <button type="submit" class="btn btn-danger p-1">Remove</button>
+            </form>
+        </div>
+        <div class="card">
+            <div class="card-header text-center">
+                <div class="m-1">
+                    <h5>@massage.Creater.UserName</h5>
+                </div>
+            </div>
+            <button class="btn btn-secondary p-lg-0 text-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(massage.Id)" aria-expanded="false" aria-controls="collapse@(massage.Id)">
+                <p class="p-0 fs-6">Discription</p>
+            </button>
+            <div class="card-body p-0 d-flex">
+                <div class="d-flex m-1">
+                    <div class="collapse-show" id="collapse@(massage.Id)">
+                        <div class="card-body">
+                            <h5>@massage.Discription</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

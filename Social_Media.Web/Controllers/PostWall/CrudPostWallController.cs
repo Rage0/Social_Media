@@ -117,7 +117,7 @@ namespace Social_Media.Web.Controllers
 
                     if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
                     {
-                        return RedirectToAction("Posts", "PostWall");
+                        return RedirectToAction("MyProfile", "Account", new {userName = User.Identity.Name});
                     }
                     else
                     {

@@ -34,6 +34,7 @@ namespace Social_Media.Web.Controllers
                 User user = await _userManager.FindByNameAsync(createrName);
                 if (chat != null)
                 {
+                    chat.UpdateAt = DateTime.Now;
                     viewModel.Massage.UsingChat = chat;
                 }
 
@@ -43,18 +44,15 @@ namespace Social_Media.Web.Controllers
                 }
 
                 await _contextEF.CreateAsync(viewModel.Massage);
-
-                if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
-                {
-                    return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId});
-                }
-                else
-                {
-                    return Redirect(returnUrl);
-                }
             }
-            ViewBag.Exeption = "Error";
-            return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
+            if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
+            }
+            else
+            {
+                return Redirect(returnUrl);
+            }
         }
 
         [HttpPost]
@@ -68,7 +66,9 @@ namespace Social_Media.Web.Controllers
                 User user = await _userManager.FindByNameAsync(viewModel.UserName);
                 if (privateChat != null)
                 {
+                    privateChat.UpdateAt = DateTime.Now;
                     viewModel.Massage.PrivateChat = privateChat;
+
                 }
 
                 if (user != null)
@@ -78,31 +78,23 @@ namespace Social_Media.Web.Controllers
 
                 await _contextEF.CreateAsync(viewModel.Massage);
 
-                if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
-                {
-                    return RedirectToAction("PrivateChatingRoom", "PrivateChat", new 
-                    { 
-                        model = new FriendNameAndUserName
-                        {
-                            UserName = viewModel.UserName,
-                            FriendName = viewModel.FriendName,
-                        }
-                    });
-                }
-                else
-                {
-                    return Redirect(returnUrl);
-                }
             }
-            ViewBag.Exeption = "Error";
-            return RedirectToAction("PrivateChatingRoom", "PrivateChat", new
+            if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
             {
-                model = new FriendNameAndUserName
+                return RedirectToAction("PrivateChatingRoom", "PrivateChat", new
                 {
-                    UserName = viewModel.UserName,
-                    FriendName = viewModel.FriendName,
-                }
-            });
+                    model = new FriendNameAndUserName
+                    {
+                        UserName = viewModel.UserName,
+                        FriendName = viewModel.FriendName,
+                    }
+                });
+            }
+            else
+            {
+                return Redirect(returnUrl);
+            }
+
         }
 
         [HttpPost]
@@ -117,23 +109,20 @@ namespace Social_Media.Web.Controllers
                     massageContext.UpdateAt = DateTime.Now;
                     massageContext.Discription = viewModel.Massage.Discription;
                     await _contextEF.UpdateAsync(massageContext);
-
-                    if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
-                    {
-                        return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
-                    }
-                    else
-                    {
-                        return Redirect(returnUrl);
-                    }
                 }
                 else
                 {
                     return BadRequest("Massage not updated");
                 }
             }
-            ViewBag.Exeption = "Error";
-            return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
+            if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return RedirectToAction("ChatingRoom", "Chat", new { chatId = viewModel.ChatId });
+            }
+            else
+            {
+                return Redirect(returnUrl);
+            };
         }
 
         [HttpPost]
@@ -145,23 +134,20 @@ namespace Social_Media.Web.Controllers
                 if (massage != null)
                 {
                     await _contextEF.RemovetAsync(massage);
-
-                    if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
-                    {
-                        return RedirectToAction("ChatingRoom", "Chat", new { chatId = chatId });
-                    }
-                    else
-                    {
-                        return Redirect(returnUrl);
-                    }
                 }
                 else
                 {
                     return BadRequest("Massage not removed");
                 }
             }
-            ViewBag.Exeption = "Error";
-            return RedirectToAction("ChatingRoom", "Chat", new { chatId = chatId });
+            if (string.IsNullOrEmpty(returnUrl) || string.IsNullOrWhiteSpace(returnUrl))
+            {
+                return RedirectToAction("ChatingRoom", "Chat", new { chatId = chatId });
+            }
+            else
+            {
+                return Redirect(returnUrl);
+            }
         }
     }
 }

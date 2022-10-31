@@ -2,10 +2,57 @@
 
 @{
     Layout = "_AdminLayout";
+    ViewBag.Title = "Admin posts";
 }
+<div>
+    @foreach (Post post in Model)
+    {
+        <div class="m-3">
+            <div class="d-flex justify-content-between">
+                <div class="justify-content-start d-flex">
+                    <div class="mx-1">
+                        <form asp-action="RemovetPost" asp-controller="CrudPostWall" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+                            <input hidden="hidden" name="postId" value="@post.Id">
+                            <button type="submit" class="btn btn-danger p-1">Remove</button>
+                        </form>
+                    </div>
+                    <div class="mx-1">
+                        <form asp-action="EditPost" asp-controller="PostWall" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()">
+                            <input hidden="hidden" name="postId" value="@post.Id">
+                            <button type="submit" class="btn btn-warning p-1">Edit</button>
+                        </form>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <form asp-action="ChatMassages" asp-controller="Admin" asp-route-chatId="@post.UsingChat.Id">
+                            <button type="submit" class="btn btn-primary p-1">Massages of comment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>@post.Title</h4>
+                </div>
+                <button class="btn btn-secondary p-0 text-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(post.Id)" aria-expanded="false" aria-controls="collapse@(post.Id)">
+                    <p class="p-0 fs-5">Discription<p/>
+                </button>
+                <div class="collapse" id="collapse@(post.Id)">
+                    <div class="card-body">
+                        <h4>@post.Discription</h4>
+                    </div>
+                </div>
+                <div class="card-footer d-flex justify-content-between">
+                    <div>
+                        <h5>Creater: @post.Creater.UserName</h5>
+                    </div>
+                    <div>
+                        <h5>@post.CreateAt</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
 
-@foreach (Post post in Model)
-{
-    <h3>Post name: @post.Title</h3>
-    <h3>Creater: @post.Creater.UserName</h3>
-}

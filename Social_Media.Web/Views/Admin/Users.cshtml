@@ -2,10 +2,46 @@
 
 @{
     Layout = "_AdminLayout";
+    ViewBag.Title = "Admin users";
 }
 
 @foreach (User user in Model)
 {
-    <h3>User name: @user.UserName</h3>
-    <h4>Email: @user.Email</h4>
+    <div class="my-3">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <div>
+                    <h5>Name: @user.UserName</h5>
+                </div>
+                <div>
+                    <h5>Id: @user.Id</h5>
+                </div>
+            </div>
+            <button class="btn btn-secondary p-0 text-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapse@(user.Id)" aria-expanded="false" aria-controls="collapse@(user.Id)">
+                <p class="p-0 fs-5">Information<p/>
+            </button>
+            <div class="collapse" id="collapse@(user.Id)">
+                <div class="card-body">
+                    <div class="row d-flex justify-content-between mx-3">
+                        <div class="col-1 w-auto">
+                            <div>
+                                <p class="fs-5">Count friends: @user.UserFriends.Count()</p>
+                            </div>
+                            <div>
+                                <p class="fs-5">Count follow: @user.FollowingUser.Count()</p>
+                            </div>
+                        </div>
+                        <div class="col-2 w-auto">
+                            <div>
+                                <p class="fs-5">Submitting posts: @user.Posts.Count()</p>
+                            </div>
+                            <div>
+                                <p class="fs-5">Creating chats: @user.OwnerChats.Count()</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }

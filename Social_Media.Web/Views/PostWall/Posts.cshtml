@@ -4,7 +4,7 @@
     Layout = "_Layout";
     ViewBag.Title = "Posts";
 }
-@foreach (Post post in Model ?? new Post[]{ })
+@foreach (Post post in Model.OrderByDescending(post => post.CreateAt))
 {
     <div class="card mx-auto" style="width: 75em; margin: 20px;">
         <div class="card-body">
@@ -19,7 +19,7 @@
                     <h6>CreateAt: @post.CreateAt</h6>
                     <h6>UpdateAt: @post.UpdateAt</h6>
             
-                    <a asp-action="ChatingRoom" asp-controller="Chat" asp-route-chatId="@post.UsingChat.Id"><h6>Comments</h6></a>
+                    <a asp-action="ChatingRoom" class="btn btn-secondary p-sm-1" asp-controller="Chat" asp-route-chatId="@post.UsingChat.Id"><h6>Comments</h6></a>
                 </div>
             </div>
         </div>

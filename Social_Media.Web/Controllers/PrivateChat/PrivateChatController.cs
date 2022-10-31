@@ -47,6 +47,7 @@ namespace Social_Media.Web.Controllers
                        var privateChatContext = await _contextEF.GetAll<PrivateChat>()
                             .Include(privateChat => privateChat.Massages)
                             .FirstOrDefaultAsync(privateChat => privateChat.Id == id);
+                        ViewBag.IdUser = user.Id;
 
                         return View(privateChatContext);
                     }

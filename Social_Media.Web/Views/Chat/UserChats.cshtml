@@ -2,10 +2,10 @@
 
 @{
     Layout = "_Layout";
-    ViewBag.Title = "Chats";
+    ViewBag.Title = "User chats";
 }
 
-@foreach (Chat chat in Model ?? new Chat[] { })
+@foreach (Chat chat in Model.OrderByDescending(chat => chat.CreateAt))
 {
     <div class="card m-2 text-center">
         <div class="card-header">
@@ -17,6 +17,10 @@
             <p class="card-text">Update: @chat.UpdateAt</p>
 
             <a asp-action="ChatingRoom" class="btn btn-secondary p-1 m-1" asp-controller="Chat" asp-route-chatId="@chat.Id">Enter the chat</a>
+            <form asp-action="RemovetChat" asp-controller="CrudChat">
+                <input hidden="hidden" name="chatId" value="@chat.Id">
+                <button class="btn btn-secondary p-1 m-1" type="submit">Remove</button>
+            </form>
         </div>
     </div>
 

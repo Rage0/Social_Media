@@ -22,6 +22,18 @@ body {
 
 }
 
+.input-for-massages{
+    width: 500px;
+    overflow:auto;
+    max-height: 200px;
+}
+
+.text-long-hidden {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
 .content-include {
     width: 1300px;
     height: 100vh;

@@ -28,6 +28,9 @@
                         <a class="btn btn-outline-light btn-sm" asp-action="MyPrivateChat" asp-controller="PrivateChat" asp-route-userName="@Context.User.Identity.Name">Massages</a>
                     </div>
                     <div class="col-1 p-1" style="width: auto">
+                        <a class="btn btn-outline-light btn-sm" asp-action="AllUsers" asp-controller="OtherAccount">Users</a>
+                    </div>
+                    <div class="col-1 p-1" style="width: auto">
                         <a class="btn btn-outline-light btn-sm" asp-action="Chats" asp-controller="Chat">Chats</a>
                     </div>        
                     <div class="col-1 p-1" style="width: auto">
@@ -49,7 +52,7 @@
                 </div>
             </div>        
         </div>
-        <div class="content-include" style="overflow:auto">
+        <div class="content-include overflow-auto">
             @RenderBody()
         </div>
     </div>

@@ -37,8 +37,11 @@ namespace Social_Media.Web.Controllers
         public async Task<IActionResult> MyFriends(string userName)
         {
             User user = await _userContextEF.GetAllUsers()
+                .Include(user => user.FollowingUser)
                 .Include(user => user.UserFriends)
                     .ThenInclude(userAnother => userAnother.PrivateChats)
+                .Include(user => user.UserFriends)
+                    .ThenInclude(userAnother => userAnother.UserFriends)
                 .Include(user => user.PrivateChats)
                 .FirstOrDefaultAsync(user => user.UserName == userName);
 

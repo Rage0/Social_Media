@@ -2,24 +2,26 @@
 
 @{
     Layout = "_Layout";
+    ViewBag.Title = "Login";
 }
 
-<div asp-validation-summary="All"></div>
-<form method="post" asp-action="Login" asp-controller="Account">
-    <tr>
-        <td>
-            <label asp-for="Name"></label>
-            <input asp-for="Name"/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label asp-for="Password"></label>
-            <input asp-for="Password"/>
-        </td>
-    </tr>
-    <button type="submit">Log in</button>
-</form>
-<div>
-    <a asp-action="ForgotPassword" asp-controller="Password">Forgot Password?</a>
+<div class="card text-center mx-auto" style="width: 40em">
+    <div class="card-body">
+        <div asp-validation-summary="All"></div>
+        <form method="post" asp-action="Login" asp-controller="Account">
+            <div class="p-1">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" />
+            </div>
+            <div class="p-1">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" />
+            </div> 
+            <button type="submit">Log in</button>
+        </form>
+        <div>
+            <a asp-action="ForgotPassword" asp-controller="Password">Forgot Password?</a>
+        </div>
+    </div>
 </div>
+

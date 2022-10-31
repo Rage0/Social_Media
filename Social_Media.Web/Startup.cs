@@ -72,39 +72,67 @@ namespace Social_Media.Web
 
             app.UseEndpoints(endpoints =>
             {
-                    endpoints.MapControllerRoute
-                    (
-                    name: "PrivateChatingRoom",
-                    pattern: "ChatingRoom",
-                    defaults: new { Controller = "PrivateChat", Action = "PrivateChatingRoom" }
-                    );
+                endpoints.MapControllerRoute
+                (
+                name: "PrivateChatingRoom",
+                pattern: "ChatingRoom",
+                defaults: new { Controller = "PrivateChat", Action = "PrivateChatingRoom" }
+                );
 
-                    endpoints.MapControllerRoute
-                    (
-                    name: "PrivateChat",
-                    pattern: "{UserName}/Chats",
-                    defaults: new { Controller = "PrivateChat", Action = "MyPrivateChat" }
-                    );
+                endpoints.MapControllerRoute
+                (
+                name: "PrivateChat",
+                pattern: "{UserName}/Chats",
+                defaults: new { Controller = "PrivateChat", Action = "MyPrivateChat" }
+                );
 
-                    endpoints.MapControllerRoute
-                    (
-                    name: "Chats",
-                    pattern: "Chats",
-                    defaults: new { Controller = "Chat", Action = "Chats" }
-                    );
+                endpoints.MapControllerRoute
+                (
+                name: "Chats",
+                pattern: "Chats",
+                defaults: new { Controller = "Chat", Action = "Chats" }
+                );
 
-                    endpoints.MapControllerRoute
-                    (
-                    name: "ChatingRoom",
-                    pattern: "Chat/{Action}",
-                    defaults: new { Controller = "Chat", Action = "ChatingRoom" }
-                    );
+                endpoints.MapControllerRoute
+                (
+                name: "AdminChats",
+                pattern: "Admin/Chat",
+                defaults: new { Controller = "Admin", Action = "Chats" }
+                );
 
-                    endpoints.MapControllerRoute
-                    (
-                    name: "default",
-                    pattern: "{controller=PostWall}/{action=Posts}/{id?}"
-                    );
+                endpoints.MapControllerRoute
+                (
+                name: "AdminChats",
+                pattern: "Admin/Post",
+                defaults: new { Controller = "Admin", Action = "Posts" }
+                );
+
+                endpoints.MapControllerRoute
+                (
+                name: "AdminChats",
+                pattern: "Admin/User",
+                defaults: new { Controller = "Admin", Action = "Users" }
+                );
+
+                endpoints.MapControllerRoute
+                (
+                name: "AdminChats",
+                pattern: "Admin/Role",
+                defaults: new { Controller = "Admin", Action = "Roles" }
+                );
+
+                endpoints.MapControllerRoute
+                (
+                name: "ChatingRoom",
+                pattern: "Chat/{Action}",
+                defaults: new { Controller = "Chat", Action = "ChatingRoom" }
+                );
+
+                endpoints.MapControllerRoute
+                (
+                name: "default",
+                pattern: "{controller=PostWall}/{action=Posts}/{id?}"
+                );
             });
         }
     }

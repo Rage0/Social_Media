@@ -6,28 +6,42 @@
     ViewBag.Title = "Massages";
 }
 
-@foreach (PrivateChat privateChat in Model)
+@foreach (PrivateChat privateChat in Model.OrderByDescending(privateChat => privateChat.UpdateAt))
 {
     <div class="card mx-auto m-2" style="width: 70em">
-        <div class="card-body mx-auto">
-            <div class="d-flex ">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
                 @if (privateChat.Members.FirstOrDefault(user => user.UserName != userName) != null ||
-               privateChat.Members.Count > 1)
+                privateChat.Members.Count > 1)
                 {
                     <div class="p-1">
-                        <h4>User: @privateChat.Members.FirstOrDefault(user => user.UserName != userName)</h4>
+                        <h4>@privateChat.Members.FirstOrDefault(user => user.UserName != userName)</h4>
                     </div>
                 }
                 else
                 {
                     <h4>User: (Delete Account) </h4>
                 }
+
+                @if(privateChat.Massages != null)
+                {
+                    <div class="text-secondary text-center align-self-center border-bottom" style="width: 45em;">
+                        <h5 class="text-long-hidden">@privateChat.Massages.OrderBy(massage => massage.CreateAt).Last().Discription</h5>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-secondary text-center align-self-center border-bottom" style="width: 45em;">
+                        <h5></h5>
+                    </div>
+                }
+                
                 <div class="p-1">
                     <form method="get" asp-action="PrivateChatingRoom" asp-controller="PrivateChat">
                         <input hidden="hidden" name="UserName" value="@userName">
                         <input hidden="hidden" name="FriendName"
                            value="@privateChat.Members.FirstOrDefault(privateChatContext => privateChatContext.UserName != userName)">
-                        <button type="submit">Send massage</button>
+                        <button class="btn btn-secondary p-1" type="submit">Send massage</button>
                     </form>
                 </div>
             </div>

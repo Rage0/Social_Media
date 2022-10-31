@@ -1,7 +1,7 @@
 ﻿@model User
 
 @{
-    Layout = "_ProfileLayout";
+    Layout = "_Layout";
     ViewBag.Title = "My Profile";
 }
 
@@ -9,9 +9,10 @@
     <div class="d-flex mx-4">
         <div class="m-3">
             <div class="border border-dark" style="height: 250px; width: 250px"></div>
-            <div class="d-inline-block">
-                <h4>Count User friends: @Model.UserFriends.Count <a asp-action="AllUsers" asp-controller="OtherAccount">+</a></h4>
-                <h4>Count Follofing user: @Model.FollowingUser.Count</h4>
+            <div class="text-center">
+
+                <h4>User friends: @Model.UserFriends.Count</h4>
+                <h4>Following user: @Model.FollowingUser.Where(user => !user.UserFriends.Contains(Model)).Count()</h4>
             </div>
         </div>
         
@@ -41,10 +42,59 @@
     </div>
 
 </div>
-<div>
-    <a asp-action="MyFriends" asp-controller="OtherAccount" asp-route-userName="@Model.UserName">My friends</a>
-    <a asp-action="PostsUser" asp-controller="PostWall" asp-route-userName="@Model.UserName">My posts</a>
-    <a asp-action="Setting" asp-controller="Account" asp-route-userName="@Model.UserName">Setting</a>
-    <a asp-action="CreatePost" asp-controller="PostWall">Create post</a>
+<div class="m-1 mx-2 d-flex justify-content-between">
+    <div class="p-1">
+        <a class="btn btn-secondary p-1" asp-action="MyFriends" asp-controller="OtherAccount" asp-route-userName="@Model.UserName">My friends</a>
+    </div>
+    <div class="p-1">
+        <a class="btn btn-secondary p-1" asp-action="UserChats" asp-controller="Chat" asp-route-userName="@Model.UserName">My chats</a>
+    </div>
+    <div class="p-1">
+        <a class="btn btn-secondary p-1" asp-action="Setting" asp-controller="Account" asp-route-userName="@Model.UserName">Setting</a>
+    </div>
+    <div class="p-1">
+        <a class="btn btn-secondary p-1" asp-action="CreatePost" asp-controller="PostWall">Create post</a>
+    </div>
+    <div class="p-1">
+        <a class="btn btn-secondary p-1" asp-action="CreateChat" asp-controller="Chat">Create chat</a>
+    </div>
+</div>
+<div class="mt-2 border-top">
+    @foreach (Post post in Model.Posts.OrderByDescending(post => post.CreateAt))
+    {
+       <div class="m-1 card">
+           <div class="card-header text-center">
+               <h4>@post.Title</h4>
+           </div>
+           <div class="card-body">
+               <p class="card-text fs-4">@post.Discription</p>
+           </div>
+           <div class="card-footer">
+                <div class="d-flex justify-content-between">
+                    <div class="m-1">
+                        <form asp-action="RemovetPost" asp-route-returnUrl="@ViewContext.HttpContext.Request.PathAndQuery()" asp-controller="CrudPostWall">
+                            <input hidden="hidden" name="PostId" value="@post.Id">
+                            <button class="btn btn-secondary p-1" type="submit">Remove</button>
+                        </form>
+                    </div>
+                    <div class="m-1">
+                        <h6>@post.CreateAt</h6>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <div class="m-1">
+                        <form asp-action="EditPost" asp-controller="PostWall">
+                            <input hidden="hidden" name="PostId" value="@post.Id">
+                            <button class="btn btn-secondary p-1" type="submit">Edit</button>
+                        </form>
+                    </div>
+                    <div class="m-1">
+                        <h6>@post.UpdateAt</h6>
+                    </div>
+                </div>
+           </div>
+       </div>
+    }
+    <div style="width: auto; height:100px"></div>
 </div>
 

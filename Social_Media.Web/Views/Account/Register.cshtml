@@ -4,30 +4,26 @@
     Layout = "_Layout";
 }
 
-<form asp-action="CreateUser" asp-controller="CrudAccount">
-    <tr>
-        <td>
-            <label asp-for="Name"></label>
-            <input asp-for="Name" value=""/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label asp-for="Email"></label>
-            <input asp-for="Email" value=""/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label asp-for="Password"></label>
-            <input asp-for="Password" value=""/>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <label asp-for="PasswordConfirm"></label>
-            <input asp-for="PasswordConfirm" value=""/>
-        </td>
-    </tr>
-    <button type="submit">Register</button>
-</form>
+<div class="card text-center mx-auto" style="width: 40em">
+    <div class="card-body">
+        <form asp-action="CreateUser" asp-controller="CrudAccount">
+            <div class="p-1">
+                <label asp-for="Name"></label>
+                <input asp-for="Name" value="" />
+            </div>
+            <div class="p-1">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" value="" />
+            </div>
+            <div class="p-1">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" value="" />
+            </div>
+            <div class="p-1">
+                <label asp-for="PasswordConfirm"></label>
+                <input asp-for="PasswordConfirm" value="" />
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+</div>
